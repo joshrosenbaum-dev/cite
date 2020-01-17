@@ -1,0 +1,17 @@
+{
+    "0": {"is_x": true},
+    "1": {"is_y": true},
+    "2": {"is_time": true},
+    "11": {"indicator": "0"},
+    "12": {"indicator": "1"},
+    "13": {"indicator": "2"},
+    "14": {"indicator": "3"},
+    "15": {"indicator": "4"},
+    "16": {"indicator": "5"},
+    "21": {"country": "0"},
+    "22": {"country": "1"},
+    "23": {"country": "2"},
+    "24": {"country": "3"},
+    "25": {"country": "4"},
+    "26": {"country": "5"}
+}

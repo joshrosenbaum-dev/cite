@@ -1,0 +1,8 @@
+{
+    "0": {"label": "Income", "file": "income.csv"},
+    "1": {"label": "Life Expectancy", "file": "life_expectancy.csv"},
+    "2": {"label": "CO2 Emissions", "file": "co2_emissions.csv"},
+    "3": {"label": "Child Mortality", "file": "child_mortality.csv"},
+    "4": {"label": "Pump Price for Gasoline", "file": "pump_price_for_gasoline.csv"},
+    "5": {"label": "Population Density", "file": "population_density.csv"}
+}
