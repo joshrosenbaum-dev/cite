@@ -17,9 +17,6 @@ from kivy.graphics import Color, Ellipse, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from random import random
 
-flag_width = 30             # Width (in pixels) of a flag icon for a country
-indicator_width = 21        # Width (in pixels) of the diameter of an empty indicator (an ellipse)
-
 class Marker:
     def __init__(self, touch):
         self.fid = touch.fid
@@ -29,7 +26,7 @@ class Marker:
         
         self.icon = None
         self.notes = "N/A (Unknown)"
-        self.width = flag_width
+        self.width = 30
 
         attributes = JsonStore("attributes.json")   # Sourced from:  
         if (attributes.exists(str(self.fid))):
@@ -50,7 +47,7 @@ class Marker:
                 self.icon = "icons/" + country.get("abbr") + ".png"
 
         if self.icon is None:
-            self.width = indicator_width * 2
+            self.width = 42
 
         self.label = Label()
 
@@ -60,7 +57,7 @@ class Marker:
         if self.icon is None:
             with handler.canvas:
                 Color(*self.color)
-                Ellipse(pos=(self.x - indicator_width / 3, self.y - indicator_width / 3 ), size=(indicator_width - 7, indicator_width - 7))
+                Ellipse(pos=(self.x - 7, self.y - 7), size=(14, 14))
         else:
             with handler.canvas:
                 Color(1, 1, 1)
