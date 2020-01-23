@@ -17,8 +17,8 @@ from kivy.graphics import Color, Ellipse, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from random import random
 
-flag_width = 30
-indicator_width = 21
+flag_width = 30             # Width (in pixels) of a flag icon for a country
+indicator_width = 21        # Width (in pixels) of the diameter of an empty indicator (an ellipse)
 
 class Marker:
     def __init__(self, touch):
@@ -31,7 +31,7 @@ class Marker:
         self.notes = "N/A (Unknown)"
         self.width = flag_width
 
-        attributes = JsonStore("attributes.json")
+        attributes = JsonStore("attributes.json")   # Sourced from:  
         if (attributes.exists(str(self.fid))):
             if (attributes.get(str(self.fid)).get("is_x")):
                 self.notes = "X Bucket"
@@ -54,20 +54,20 @@ class Marker:
 
         self.label = Label()
 
-    def draw(self, handler):
+    def draw(self, handler):    # Sourced from: https://kivy.org/doc/stable/tutorials/firstwidget.html
         handler.remove_widget(self.label)
         self.updateLabel()
         if self.icon is None:
             with handler.canvas:
                 Color(*self.color)
-                Ellipse(pos=(self.x - 7, self.y - 7), size=(14, 14))
+                Ellipse(pos=(self.x - indicator_width / 3, self.y - indicator_width / 3 ), size=(indicator_width - 7, indicator_width - 7))
         else:
             with handler.canvas:
                 Color(1, 1, 1)
                 Rectangle(source=self.icon, pos=(self.x, self.y), size=(30, 20))
         handler.add_widget(self.label)
 
-    def updateLabel(self):
+    def updateLabel(self):      # Sourced from: https://kivy.org/doc/stable/examples/gen__demo__touchtracer__main__py.html
         self.label.text = '[%s] (%d, %d) %s' % (self.fid, self.x, self.y, self.notes)
         self.label.texture_update()
         self.label.pos = [self.x - self.width, self.y - 10]
@@ -81,7 +81,6 @@ class RVHandler(Widget):
             marker = Marker(touch)
             self.markers_ontable.append(marker)
             marker.draw(self)
-            #self.add_widget(marker.label)
             self.table_status()
 
     def on_touch_up(self, touch):
@@ -95,13 +94,10 @@ class RVHandler(Widget):
     def on_touch_move(self, touch):
         if "markerid" in touch.profile:
             for marker in self.markers_ontable:
-                if (marker.fid == touch.fid):
+                if (marker.fid == touch.fid):   
                     marker.x = touch.x
                     marker.y = touch.y
-                    #self.remove_widget(marker.label)
                     marker.draw(self)
-                    #self.add_widget(marker.label)
-            # self.table_status()   # Enable this to view the table status at every movement
     
     def table_status(self):
         attributes = JsonStore("attributes.json")
