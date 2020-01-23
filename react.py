@@ -1,14 +1,3 @@
-# Bubbles
-# 5-8 countries: individual country markers
-# 10 countries, 2 per region
-# Keep open question: if we have one marker per country, it's going to get crazy with too many markers.
-# 	(we can do regions later - put on shelf for now)
-# 	(next step: highlight, then regions)
-# A way of selecting X, and Y.
-# 	4-5 data sets
-# Keep the time dial.
-# (Hardcode linear or log in fidicual id database)
-
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
