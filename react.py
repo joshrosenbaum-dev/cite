@@ -12,9 +12,13 @@
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
+from kivy.uix.label import Label
 from kivy.graphics import Color, Ellipse, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from random import random
+
+flag_width = 30
+indicator_width = 21
 
 class Marker:
     def __init__(self, touch):
@@ -22,8 +26,11 @@ class Marker:
         self.x = touch.pos[0]
         self.y = touch.pos[1]
         self.color = (random(), random(), random())
-        self.notes = "N/A (Unknown)"
+        
         self.icon = None
+        self.notes = "N/A (Unknown)"
+        self.width = flag_width
+
         attributes = JsonStore("attributes.json")
         if (attributes.exists(str(self.fid))):
             if (attributes.get(str(self.fid)).get("is_x")):
@@ -42,9 +49,28 @@ class Marker:
                 self.notes = country.get("label") + " (" + country.get("abbr") + ")"
                 self.icon = "icons/" + country.get("abbr") + ".png"
 
-    def draw(self, canvas):
-        with canvas:
-            Rectangle(source=self.icon, pos=(self.x, self.y), size=(30, 20))
+        if self.icon is None:
+            self.width = indicator_width * 2
+
+        self.label = Label()
+
+    def draw(self, handler):
+        handler.remove_widget(self.label)
+        self.updateLabel()
+        if self.icon is None:
+            with handler.canvas:
+                Color(*self.color)
+                Ellipse(pos=(self.x - 7, self.y - 7), size=(14, 14))
+        else:
+            with handler.canvas:
+                Color(1, 1, 1)
+                Rectangle(source=self.icon, pos=(self.x, self.y), size=(30, 20))
+        handler.add_widget(self.label)
+
+    def updateLabel(self):
+        self.label.text = '[%s] (%d, %d) %s' % (self.fid, self.x, self.y, self.notes)
+        self.label.texture_update()
+        self.label.pos = [self.x - self.width, self.y - 10]
 
 class RVHandler(Widget):
     markers_ontable = []
@@ -54,7 +80,8 @@ class RVHandler(Widget):
         if "markerid" in touch.profile:
             marker = Marker(touch)
             self.markers_ontable.append(marker)
-            marker.draw(self.canvas)
+            marker.draw(self)
+            #self.add_widget(marker.label)
             self.table_status()
 
     def on_touch_up(self, touch):
@@ -62,6 +89,7 @@ class RVHandler(Widget):
             for marker in self.markers_ontable:
                 if (marker.fid == touch.fid):
                     self.markers_ontable.remove(marker)
+                    self.remove_widget(marker.label)
             self.table_status()
 
     def on_touch_move(self, touch):
@@ -70,7 +98,9 @@ class RVHandler(Widget):
                 if (marker.fid == touch.fid):
                     marker.x = touch.x
                     marker.y = touch.y
-                    marker.draw(self.canvas)
+                    #self.remove_widget(marker.label)
+                    marker.draw(self)
+                    #self.add_widget(marker.label)
             # self.table_status()   # Enable this to view the table status at every movement
     
     def table_status(self):
