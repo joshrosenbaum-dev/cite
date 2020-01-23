@@ -12,7 +12,7 @@
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
-from kivy.graphics import Color, Ellipse
+from kivy.graphics import Color, Ellipse, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from random import random
 
@@ -22,7 +22,8 @@ class Marker:
         self.x = touch.pos[0]
         self.y = touch.pos[1]
         self.color = (random(), random(), random())
-        self.notes = "N/A"
+        self.notes = "N/A (Unknown)"
+        self.icon = None
         attributes = JsonStore("attributes.json")
         if (attributes.exists(str(self.fid))):
             if (attributes.get(str(self.fid)).get("is_x")):
@@ -39,13 +40,11 @@ class Marker:
                 countries = JsonStore("countries.json")
                 country = countries.get(attributes.get(str(self.fid)).get("country"))
                 self.notes = country.get("label") + " (" + country.get("abbr") + ")"
-            else:
-                self.notes = self.notes
+                self.icon = "icons/" + country.get("abbr") + ".png"
 
     def draw(self, canvas):
         with canvas:
-            Color(*self.color)
-            Ellipse(pos=(self.x - 7, self.y - 7), size=(14, 14))
+            Rectangle(source=self.icon, pos=(self.x, self.y), size=(30, 20))
 
 class RVHandler(Widget):
     markers_ontable = []
