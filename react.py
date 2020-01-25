@@ -17,7 +17,7 @@ class Marker:
         self.notes = "N/A (Unknown)"
         self.width = 30
 
-        attributes = JsonStore("attributes.json")   # Sourced from:  
+        attributes = JsonStore("attributes.json")   # Sourced from: https://kivy.org/doc/stable/api-kivy.storage.jsonstore.html 
         if (attributes.exists(str(self.fid))):
             if (attributes.get(str(self.fid)).get("is_x")):
                 self.notes = "X Bucket"
