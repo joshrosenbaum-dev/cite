@@ -7,10 +7,10 @@ from kivy.storage.jsonstore import JsonStore
 from random import random
 
 class Marker:
-    def __init__(self, touch):
-        self.fid = touch.fid
-        self.x = touch.pos[0]
-        self.y = touch.pos[1]
+    def __init__(self, fid): #, touch):
+        self.fid = fid
+        self.x = 100. #touch.pos[0]
+        self.y = 100. #touch.pos[1]
         self.color = (random(), random(), random())
         
         self.is_x = self.is_y = self.is_time = False
@@ -66,7 +66,8 @@ class Marker:
     #     self.label.pos = [self.x - self.width, self.y - 10]
 
 class RVHandler(Widget):
-    markers_ontable = []
+    markers_ontable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21)]
+    #markers_ontable = []
 
     def on_touch_down(self, touch):
         self.table_status()
