@@ -13,7 +13,7 @@ class Marker:
         self.y = touch.pos[1]
         self.color = (random(), random(), random())
         
-        self.icon = None
+        self.icon = self.file = None
         self.notes = "N/A (Unknown)"
         self.width = 30
 
@@ -29,6 +29,7 @@ class Marker:
                 indicators = JsonStore("indicators.json")
                 indicator = indicators.get(attributes.get(str(self.fid)).get("indicator"))
                 self.notes = indicator.get("label") + " (" + indicator.get("file") + ")"
+                self.file = "csv/" + indicator.get("file")
             elif (attributes.get(str(self.fid)).get("country")):
                 countries = JsonStore("countries.json")
                 country = countries.get(attributes.get(str(self.fid)).get("country"))
