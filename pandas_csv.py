@@ -11,5 +11,6 @@ x = pd.read_csv(x_file)
 y = pd.read_csv(y_file)
 x_val = x[x.country == country][year][0]    # Sourced from: https://data36.com/pandas-tutorial-1-basics-reading-data-files-dataframes-data-selection/
 y_val = y[y.country == country][year][0]
+
 data_pair = [x_val, y_val]
 print(data_pair)
