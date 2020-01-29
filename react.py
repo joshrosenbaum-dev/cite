@@ -5,6 +5,7 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Color #, Ellipse, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from random import random
+from pandas_csv import get_plot
 
 class Marker:
     def __init__(self, fid): #, touch):
@@ -70,7 +71,8 @@ class RVHandler(Widget):
     #markers_ontable = []
 
     def on_touch_down(self, touch):
-        self.table_status()
+        # self.table_status()
+        print(get_plot(self.markers_ontable[3], self.markers_ontable[4], self.markers_ontable[5]))
         if "markerid" in touch.profile:
             marker = Marker(touch)
             self.markers_ontable.append(marker)
