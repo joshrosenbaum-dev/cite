@@ -28,9 +28,13 @@ Next, install Kivy. Since we have an Anaconda environment, the installation come
 ```
 conda install kivy -c conda-forge
 ```
-Lastly, `pip` will save us! Install oscpy using pip. Since we've activated our environment, this will not install oscpy globally:
+From here, `pip` will save us! Install oscpy using pip. Since we've activated our environment, this will not install oscpy globally:
 ```
 pip install oscpy
+```
+Lastly, install pandas.
+```
+pip install pandas
 ```
 ## Preparing/Running CITE
 Clone the CITE repository to any folder. In the CITE folder (which should include `react.py`), run the following commands:  
