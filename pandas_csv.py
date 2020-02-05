@@ -1,5 +1,4 @@
 import pandas as pd
-    # install: pip install pandas
 def get_plot(mark_x, mark_y, mark_c):
     year = "2018"
     x = pd.read_csv(mark_x.file, index_col = "country")[year].loc[mark_c.country]
