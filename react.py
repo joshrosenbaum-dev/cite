@@ -1,8 +1,6 @@
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
-# from kivy.uix.label import Label
-from kivy.graphics import Color #, Ellipse, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from random import random
 from pandas_csv import get_plot
