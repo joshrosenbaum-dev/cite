@@ -44,7 +44,7 @@ class RVHandler(Widget):
         if "markerid" in touch.profile:
             marker = Marker(touch)
             self.markers_ontable.append(marker)
-            self.table_status()
+            self.table_status() # TODO: Rename this function as the table initializer.
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
@@ -62,18 +62,28 @@ class RVHandler(Widget):
     
     def table_status(self):
         attributes = JsonStore("attributes.json")
+        indicators_mot, countries_mot = [], []
+
         print("\nID\t IS_X\t IS_Y\t TIME\t POSITION\t\t INDICATOR_ID\t COUNTRY_ID\t NOTES")
         print("===================================================================================================================")
         if len(self.markers_ontable) == 0:
             print("N/A\t No markers are on the table ------------------------------------------------------------------------------")
-        for marker in self.markers_ontable: 
+        for index, marker in enumerate(self.markers_ontable): 
             if attributes.exists(str(marker.fid)):
+                indicator = attributes.get(str(marker.fid)).get("indicator")
+                country = attributes.get(str(marker.fid)).get("country")
+                if indicator:
+                    indicators_mot.append(index)
+                if country:
+                    countries_mot.append(index)
+
+        ##########################################################################################
                 print(marker.fid,"\t",attributes.get(str(marker.fid)).get("is_x"), end = "")
                 print("\t",attributes.get(str(marker.fid)).get("is_y"), end = "")
                 print("\t",attributes.get(str(marker.fid)).get("is_time"), end = "")
                 print("\t (" + format(marker.x, '.2f') + ", " + format(marker.y, '.2f') + ")", end ="")
-                print("\t",attributes.get(str(marker.fid)).get("indicator"), end = "")
-                print("\t\t",attributes.get(str(marker.fid)).get("country"), end = "")
+                print("\t",indicator, end = "")
+                print("\t\t",country, end = "")
                 if marker.is_x:
                     print("\t\t","X Bucket")
                 elif marker.is_y:
@@ -86,6 +96,13 @@ class RVHandler(Widget):
                     print("\t\t",marker.country)
             else:
                 print(marker.fid,"\t ----------------------------------------------------------------------------------------------------------")
+        ##########################################################################################
+
+        print("\nINDICATORS_MOT:",indicators_mot,len(indicators_mot))
+        print("COUNTRIES_MOT:",countries_mot,len(countries_mot))
+
+        if len(indicators_mot) >= 2 and len(countries_mot) >= 1:
+            pass
 
 class RVApp(App):
     def build(self):
