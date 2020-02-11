@@ -6,10 +6,10 @@ from random import random
 from pandas_csv import get_plot
 
 class Marker:
-    def __init__(self, fid): #, touch):
-        self.fid = fid
-        self.x = 100. #touch.pos[0]
-        self.y = 100. #touch.pos[1]
+    def __init__(self, touch): # , fid):
+        self.fid = touch.fid
+        self.x = touch.pos[0] # 100.
+        self.y = touch.pos[1] # 100.
         self.color = (random(), random(), random())
         
         self.is_x = self.is_y = self.is_time = False
@@ -35,12 +35,12 @@ class Marker:
                 self.icon = "icons/" + country.get("abbr") + ".png"
 
 class RVHandler(Widget):
-    markers_ontable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21)]
-    #markers_ontable = []
+    #markers_ontable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21)]
+    markers_ontable = []
 
     def on_touch_down(self, touch):
         # self.table_status()
-        print(get_plot(self.markers_ontable[3], self.markers_ontable[4], self.markers_ontable[5]))
+        # print(get_plot(self.markers_ontable[3], self.markers_ontable[4], self.markers_ontable[5]))
         if "markerid" in touch.profile:
             marker = Marker(touch)
             self.markers_ontable.append(marker)
