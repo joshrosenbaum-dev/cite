@@ -6,10 +6,10 @@ from random import random
 from pandas_csv import get_plot
 
 class Marker:
-    def __init__(self, touch): # , fid):
-        self.fid = touch.fid
-        self.x = touch.pos[0] # 100.
-        self.y = touch.pos[1] # 100.
+    def __init__(self, fid): # , touch):
+        self.fid = fid
+        self.x = 100. # touch.pos[0]
+        self.y = 100. # touch.pos[1]
         self.color = (random(), random(), random())
         
         self.is_x = self.is_y = self.is_time = False
@@ -35,16 +35,15 @@ class Marker:
                 self.icon = "icons/" + country.get("abbr") + ".png"
 
 class RVHandler(Widget):
-    #markers_ontable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21)]
-    markers_ontable = []
+    markers_ontable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21), Marker(22), Marker(24)]
+    #markers_ontable = []
 
     def on_touch_down(self, touch):
-        # self.table_status()
-        # print(get_plot(self.markers_ontable[3], self.markers_ontable[4], self.markers_ontable[5]))
+        self.table_status()
         if "markerid" in touch.profile:
             marker = Marker(touch)
             self.markers_ontable.append(marker)
-            self.table_status() # TODO: Rename this function as the table initializer.
+            # self.table_status() # TODO: Rename this function as the table initializer.
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
@@ -101,8 +100,14 @@ class RVHandler(Widget):
         print("\nINDICATORS_MOT:",indicators_mot,len(indicators_mot))
         print("COUNTRIES_MOT:",countries_mot,len(countries_mot))
 
+        # TODO: move to new function for separation of concerns.
         if len(indicators_mot) >= 2 and len(countries_mot) >= 1:
-            pass
+            x = indicators_mot[0]
+            y = indicators_mot[1]
+            for mot_entry in countries_mot:
+                print(mot_entry,end=' ')
+        else:
+            print("Needs more")
 
 class RVApp(App):
     def build(self):
