@@ -12,6 +12,9 @@ These instructions will allow you to set up the script on your local machine.
 * [Kivy](https://www.kivy.org) (can be installed via `conda` the Anaconda environment)
 * [oscpy](https://pypi.org/project/oscpy/) (can be installed via `pip` in the Anaconda environment)
 
+### Notes for Visual Studio Code
+If you are running Visual Studio Code, you **must** have your environment setup first. You will then use your environment as your Python interpreter.
+
 To start, create a new Anaconda environment with the Python version being 3.7 (**Kivy does NOT work with Python 3.8+, so you must specify the version**):
 ```
 conda create -n cite python=3.7 pip
@@ -36,6 +39,9 @@ Lastly, install pandas.
 ```
 pip install pandas
 ```
+### Notes for Visual Studio Code
+Visual Studio Code requires you to select an interpreter for Python. Use `Python 3.7.x x-bit('cite': conda)`. Then you may install PyLint either using conda or pip in your environment.
+
 ## Preparing/Running CITE
 Clone the CITE repository to any folder. In the CITE folder (which should include `react.py`), run the following commands:  
 
@@ -61,5 +67,4 @@ We will also utilize a tabletop object that will act as a dial, changing the vie
 
 ## Current Issues
 Below is a list of current issues that need to be addressed in later updates:  
-* On-screen indicators create a line of display objects that need to regenerate instead of creating a line for each movement.
 * On-screen instructions should be developed using .kv file architecture.
