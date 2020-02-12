@@ -61,7 +61,7 @@ class RVHandler(Widget):
     
     def table_status(self):
         attributes = JsonStore("attributes.json")
-        indicators_mot, countries_mot = [], []
+        indicators_mot, countries_mot, end_plots = [], [], []
 
         print("\nID\t IS_X\t IS_Y\t TIME\t POSITION\t\t INDICATOR_ID\t COUNTRY_ID\t NOTES")
         print("===================================================================================================================")
@@ -100,14 +100,13 @@ class RVHandler(Widget):
         print("\nINDICATORS_MOT:",indicators_mot,len(indicators_mot))
         print("COUNTRIES_MOT:",countries_mot,len(countries_mot))
 
-        # TODO: move to new function for separation of concerns.
         if len(indicators_mot) >= 2 and len(countries_mot) >= 1:
             x = indicators_mot[0]
             y = indicators_mot[1]
             for mot_entry in countries_mot:
-                print(mot_entry,end=' ')
-        else:
-            print("Needs more")
+                end_plots.append(get_plot(self.markers_ontable[x], self.markers_ontable[y], self.markers_ontable[mot_entry]))
+
+        print(end_plots)
 
 class RVApp(App):
     def build(self):
