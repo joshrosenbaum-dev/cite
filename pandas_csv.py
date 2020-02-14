@@ -1,5 +1,6 @@
 import pandas as pd
 def get_plot(mark_x, mark_y, mark_c):
+    #TODO: Make not constant
     year = "2018"
     x = pd.read_csv(mark_x.file, index_col = "country")[year].loc[mark_c.country]
     y = pd.read_csv(mark_y.file, index_col = "country")[year].loc[mark_c.country]

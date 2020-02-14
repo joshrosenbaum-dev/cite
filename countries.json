@@ -1,8 +1,8 @@
 {
-    "0": {"label": "United States", "abbr": "us"},
-    "1": {"label": "Brazil", "abbr": "br"},
-    "2": {"label": "Greece", "abbr": "gr"},
-    "3": {"label": "Australia", "abbr": "au"},
-    "4": {"label": "Singapore", "abbr": "sg"},
-    "5": {"label": "Kenya", "abbr": "ke"}
+    "0": {"label": "United States", "abbr": "usa"},
+    "1": {"label": "Brazil", "abbr": "bra"},
+    "2": {"label": "Greece", "abbr": "grc"},
+    "3": {"label": "Australia", "abbr": "aus"},
+    "4": {"label": "Singapore", "abbr": "sgp"},
+    "5": {"label": "Kenya", "abbr": "ken"}
 }
