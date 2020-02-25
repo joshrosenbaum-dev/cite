@@ -6,5 +6,5 @@ def getPoint(mark_x, mark_y, mark_c):
     y = pd.read_csv(mark_y.file, index_col = "country")[year].loc[mark_c.label]
         # https://stackoverflow.com/questions/20107570/removing-index-column-in-pandas-when-reading-a-csv
         # https://brohrer.github.io/dataframe_indexing.html
-    pair = [x, y]
-    return pair
+    triple = [x, y, mark_c.label]
+    return triple
