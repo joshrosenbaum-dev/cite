@@ -2,12 +2,15 @@ from time import sleep
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+import matplotlib.pyplot as plt
 from kivy.storage.jsonstore import JsonStore
 from pandas_csv import getPoint
 from mpl import plotPoints
 
 class Marker:
-    def __init__(self, fid):
+    def __init__(self, fid, jsonData):
         # Retrieve ID based on touch.fid, position based on touch.pos
         self.fid = fid
         self.pos = [100.0, 100.0]
@@ -15,9 +18,9 @@ class Marker:
         self.is_x = self.is_y = self.is_time = False       
 
         # TODO: Move to loadData in MarkerHandler(?)
-        attributes = JsonStore("attributes.json")
-        indicators = JsonStore("indicators.json")
-        artifacts = JsonStore("artifacts.json")
+        attributes = jsonData["attributes"] # JsonStore("attributes.json")
+        indicators = jsonData["indicators"] # JsonStore("indicators.json")
+        artifacts = jsonData["artifacts"] # JsonStore("artifacts.json")
         fid_str = str(self.fid)
 
         # Check if ID is in attributes table
@@ -58,21 +61,37 @@ class Marker:
         print("(" + format(self.label) + ")","\t")
 
 class MarkerHandler(Widget):
-    markersOnTable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21), Marker(22), Marker(24)]
     # markersOnTable = []
     
-    def loadData(self):
+    def loadData(self, myGraph):
         print("Loading...")
+        self.jsonData = {}
+        self.jsonData["attributes"] = JsonStore("attributes.json")
+        self.jsonData["indicators"] = JsonStore("indicators.json")
+        self.jsonData["artifacts"] = JsonStore("artifacts.json")
+
+        self.myGraph = myGraph
+        
         self.indicatorData = {}
         # Key --> indicator "0", "1"
         # Data --> Pandas dataframe, based on filename generated from JSON
+        self.markersOnTable = []
+        self.markersOnTable = [ Marker(0, self.jsonData), 
+                                Marker(1, self.jsonData), 
+                                Marker(2, self.jsonData), 
+                                Marker(11, self.jsonData), 
+                                Marker(12, self.jsonData), 
+                                Marker(21, self.jsonData), 
+                                Marker(22, self.jsonData), 
+                                Marker(24, self.jsonData)]
+    
 
     def on_touch_down(self, touch):
         # TODO: Put down all markers, see if the below statement prints before loading
         # print("On touch down")
         self.tableInit()
         if "markerid" in touch.profile:
-            marker = Marker(touch)
+            marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
             # self.tableInit()
 
@@ -84,11 +103,12 @@ class MarkerHandler(Widget):
             self.tableInit()
 
     def on_touch_move(self, touch):
+        self.tableInit()
+        print("Moving")
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:   
-                    marker.x = touch.x
-                    marker.y = touch.y
+                    marker.pos = touch.pos
 
     def tableInit(self):
         attributes = JsonStore("attributes.json")
@@ -118,6 +138,7 @@ class MarkerHandler(Widget):
                 # firstData = indicatorData[self.markersOnTable[x].indID]
                 points.append(getPoint(self.markersOnTable[x], self.markersOnTable[y], self.markersOnTable[mot_entry]))
             plotPoints(points, self.markersOnTable[x], self.markersOnTable[y])
+            self.myGraph.draw()
 
 class ReactivisionApp(App):
     def build(self):
@@ -128,11 +149,24 @@ class ReactivisionApp(App):
         Config.set("graphics", "position", "custom")
         Config.set("graphics", "left", 850)
         Config.set("graphics", "top",  100)
+
+        canvas = FigureCanvasKivyAgg(plt.gcf())
+
         # Sleep to make sure that all data is loaded before continuing.
         Handler = MarkerHandler()
-        Handler.loadData() 
-        sleep(1)
-        return Handler
+        Handler.loadData(canvas) 
+        #sleep(1)
+
+        #plt.plot([1,23,2,4])
+        #plt.ylabel("Why indeed")
+
+        box = BoxLayout()
+        box.add_widget(Handler)
+        box.add_widget(canvas)
+
+        return box
+
+        #return Handler
 
 if __name__ == "__main__":
     ReactivisionApp().run()
