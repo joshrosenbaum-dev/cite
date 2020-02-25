@@ -38,6 +38,16 @@ pip install oscpy pandas matplotlib
 ### Notes for Visual Studio Code
 Visual Studio Code requires you to select an interpreter for Python. Use `Python 3.7.x x-bit('cite': conda)`. Then you may install PyLint either using conda or pip in your environment.
 
+### Notes for Kivy Garden
+First, install Kivy Garden using
+```
+pip install kivy-garden
+```
+Since we've already installed matplotlib, we can add the backend for `garden.matplotlib` using
+```
+garden install matplotlib --kivy
+```
+
 ## Preparing/Running CITE
 Clone the CITE repository to any folder. In the CITE folder (which should include `react.py`), run the following commands:  
 
@@ -48,15 +58,6 @@ conda activate cite
 Run the Python file named `react.py`
 ```
 python react.py
-```
-### Notes for Kivy Garden
-First, install Kivy Garden using
-```
-sudo pip install kivy-garden
-```
-Since we've already installed Matplotlib, we can add the backend for `garden.matplotlib` using
-```
-garden install matplotlib --kivy
 ```
 ---
 ## Design Implentation
