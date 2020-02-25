@@ -60,9 +60,7 @@ class Marker:
         print(self.type, end = " ")
         print("(" + format(self.label) + ")","\t")
 
-class MarkerHandler(Widget):
-    # markersOnTable = []
-    
+class MarkerHandler(Widget):  
     def loadData(self, myGraph):
         print("Loading...")
         self.jsonData = {}
@@ -87,13 +85,11 @@ class MarkerHandler(Widget):
     
 
     def on_touch_down(self, touch):
-        # TODO: Put down all markers, see if the below statement prints before loading
-        # print("On touch down")
         self.tableInit()
         if "markerid" in touch.profile:
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
-            # self.tableInit()
+            self.tableInit()
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
@@ -104,14 +100,13 @@ class MarkerHandler(Widget):
 
     def on_touch_move(self, touch):
         self.tableInit()
-        print("Moving")
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:   
                     marker.pos = touch.pos
+            self.tableInit()
 
     def tableInit(self):
-        attributes = JsonStore("attributes.json")
         indicatorsMOT, artifactsMOT, points = [], [], []
 
         print("\nID\tIS_X\tIS_Y\tTIME\tPOSITION\t\tINDICATOR_ID\tCOUNTRY_ID\tTYPE (LABEL)")
@@ -119,7 +114,7 @@ class MarkerHandler(Widget):
         if len(self.markersOnTable) == 0:
             print("N/A\t No markers are on the table ------------------------------------------------------------------------------")
         for index, marker in enumerate(self.markersOnTable):
-            if attributes.exists(str(marker.fid)):
+            if self.jsonData["attributes"].exists(str(marker.fid)):
                 if marker.type == "Indicator":
                     indicatorsMOT.append(index)
                 if marker.type == "Artifact":
@@ -149,24 +144,15 @@ class ReactivisionApp(App):
         Config.set("graphics", "position", "custom")
         Config.set("graphics", "left", 850)
         Config.set("graphics", "top",  100)
-
-        canvas = FigureCanvasKivyAgg(plt.gcf())
-
-        # Sleep to make sure that all data is loaded before continuing.
+        # Create matplotlib canvas and pass graph to Handler class
+        Canvas = FigureCanvasKivyAgg(plt.gcf())
         Handler = MarkerHandler()
-        Handler.loadData(canvas) 
-        #sleep(1)
-
-        #plt.plot([1,23,2,4])
-        #plt.ylabel("Why indeed")
-
+        Handler.loadData(Canvas) 
+        # Create app bounding box
         box = BoxLayout()
         box.add_widget(Handler)
-        box.add_widget(canvas)
-
+        box.add_widget(Canvas)
         return box
-
-        #return Handler
 
 if __name__ == "__main__":
     ReactivisionApp().run()
