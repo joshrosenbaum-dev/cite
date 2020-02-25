@@ -1,3 +1,4 @@
+from time import sleep
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
@@ -128,9 +129,10 @@ class ReactivisionApp(App):
         Config.set("graphics", "position", "custom")
         Config.set("graphics", "left", 850)
         Config.set("graphics", "top",  100)
+        sleep(0.75)
         Handler = MarkerHandler()
         Handler.loadData() 
-        # TODO: Sleep function to avoid overlap w/ touch
+        sleep(0.75)
         return Handler
 
 if __name__ == "__main__":
