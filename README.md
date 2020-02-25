@@ -31,13 +31,9 @@ Next, install Kivy. Since we have an Anaconda environment, the installation come
 ```
 conda install kivy -c conda-forge
 ```
-From here, `pip` will save us! Install oscpy using pip. Since we've activated our environment, this will not install oscpy globally:
+From here, `pip` will save us! Install oscpy, pandas, and matplotlib using pip. Since we've activated our environment, this will not install anything globally:
 ```
-pip install oscpy
-```
-Lastly, install pandas.
-```
-pip install pandas
+pip install oscpy pandas matplotlib
 ```
 ### Notes for Visual Studio Code
 Visual Studio Code requires you to select an interpreter for Python. Use `Python 3.7.x x-bit('cite': conda)`. Then you may install PyLint either using conda or pip in your environment.

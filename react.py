@@ -3,7 +3,8 @@ from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
 from kivy.storage.jsonstore import JsonStore
-from pandas_csv import get_plot
+from pandas_csv import getPoint
+from mpl import plotPoints
 
 class Marker:
     def __init__(self, fid):
@@ -13,11 +14,10 @@ class Marker:
         self.type = self.indicator_id = self.artifact_id = self.label = self.file = self.icon = None
         self.is_x = self.is_y = self.is_time = False       
 
-        # TODO: Move to loadData in MarkerHandler
+        # TODO: Move to loadData in MarkerHandler(?)
         attributes = JsonStore("attributes.json")
         indicators = JsonStore("indicators.json")
         artifacts = JsonStore("artifacts.json")
-
         fid_str = str(self.fid)
 
         # Check if ID is in attributes table
@@ -58,67 +58,66 @@ class Marker:
         print("(" + format(self.label) + ")","\t")
 
 class MarkerHandler(Widget):
-    markers_ontable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21), Marker(22), Marker(24)]
-    # markers_ontable = []
+    markersOnTable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21), Marker(22), Marker(24)]
+    # markersOnTable = []
     
     def loadData(self):
-        print("Loading")
+        print("Loading...")
         self.indicatorData = {}
         # Key --> indicator "0", "1"
         # Data --> Pandas dataframe, based on filename generated from JSON
 
     def on_touch_down(self, touch):
-        # Put down all markers, see if on touch down prints before loading
-        print("On touch down")
-        self.table_init()
+        # TODO: Put down all markers, see if the below statement prints before loading
+        # print("On touch down")
+        self.tableInit()
         if "markerid" in touch.profile:
             marker = Marker(touch)
-            self.markers_ontable.append(marker)
-            # self.table_init()
+            self.markersOnTable.append(marker)
+            # self.tableInit()
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
-            for marker in self.markers_ontable:
+            for marker in self.markersOnTable:
                 if marker.fid == touch.fid:
-                    self.markers_ontable.remove(marker)
-            self.table_init()
+                    self.markersOnTable.remove(marker)
+            self.tableInit()
 
     def on_touch_move(self, touch):
         if "markerid" in touch.profile:
-            for marker in self.markers_ontable:
+            for marker in self.markersOnTable:
                 if marker.fid == touch.fid:   
                     marker.x = touch.x
                     marker.y = touch.y
 
-    def table_init(self):
+    def tableInit(self):
         attributes = JsonStore("attributes.json")
-        indicators_mot, artifacts_mot, end_plots = [], [], []
+        indicatorsMOT, artifactsMOT, points = [], [], []
 
         print("\nID\tIS_X\tIS_Y\tTIME\tPOSITION\t\tINDICATOR_ID\tCOUNTRY_ID\tTYPE (LABEL)")
         print("===================================================================================================================")
-        if len(self.markers_ontable) == 0:
+        if len(self.markersOnTable) == 0:
             print("N/A\t No markers are on the table ------------------------------------------------------------------------------")
-        for index, marker in enumerate(self.markers_ontable):
+        for index, marker in enumerate(self.markersOnTable):
             if attributes.exists(str(marker.fid)):
                 if marker.type == "Indicator":
-                    indicators_mot.append(index)
+                    indicatorsMOT.append(index)
                 if marker.type == "Artifact":
-                    artifacts_mot.append(index)
+                    artifactsMOT.append(index)
                 marker.to_string()
             else:
                 print(marker.fid,"\t ----------------------------------------------------------------------------------------------------------")
 
-        print("\nINDICATORS_MOT:",indicators_mot,len(indicators_mot))
-        print("COUNTRIES_MOT:",artifacts_mot,len(artifacts_mot))
+        print("\nINDICATORS_MOT:",indicatorsMOT,len(indicatorsMOT))
+        print("COUNTRIES_MOT:",artifactsMOT,len(artifactsMOT))
 
-        if len(indicators_mot) >= 2 and len(artifacts_mot) >= 1:
-            x = indicators_mot[0]
-            y = indicators_mot[1]
-            for mot_entry in artifacts_mot:
-                # firstData = indicatorData[self.markers_ontable[x].indID]
-                end_plots.append(get_plot(self.markers_ontable[x], self.markers_ontable[y], self.markers_ontable[mot_entry]))
-
-        print(end_plots)
+        if len(indicatorsMOT) >= 2 and len(artifactsMOT) >= 1:
+            x = indicatorsMOT[0]
+            y = indicatorsMOT[1]
+            for mot_entry in artifactsMOT:
+                # firstData = indicatorData[self.markersOnTable[x].indID]
+                points.append(getPoint(self.markersOnTable[x], self.markersOnTable[y], self.markersOnTable[mot_entry]))
+            plotPoints(points, self.markersOnTable[x], self.markersOnTable[y])
 
 class ReactivisionApp(App):
     def build(self):
@@ -129,10 +128,10 @@ class ReactivisionApp(App):
         Config.set("graphics", "position", "custom")
         Config.set("graphics", "left", 850)
         Config.set("graphics", "top",  100)
-        sleep(0.75)
+        # Sleep to make sure that all data is loaded before continuing.
         Handler = MarkerHandler()
         Handler.loadData() 
-        sleep(0.75)
+        sleep(1)
         return Handler
 
 if __name__ == "__main__":
