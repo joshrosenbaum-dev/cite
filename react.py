@@ -83,7 +83,7 @@ class MarkerHandler(Widget):
                                 Marker(12, self.jsonData), 
                                 Marker(21, self.jsonData), 
                                 Marker(22, self.jsonData), 
-                                Marker(24, self.jsonData)]
+                                Marker(24, self.jsonData) ]
     
 
     def on_touch_down(self, touch):
