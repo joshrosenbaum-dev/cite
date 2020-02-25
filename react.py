@@ -26,8 +26,10 @@ class Marker:
             elif attributes.get(str(self.fid)).get("indicator"):
                 indicators = JsonStore("indicators.json")
                 indicator = indicators.get(attributes.get(str(self.fid)).get("indicator"))
+                # TODO: Save indicator ID
+                # TODO: Make a markerType field
                 self.axis_label = indicator.get("label")
-                self.file = "csv/" + indicator.get("file")
+                self.file = "csv/" + indicator.get("file") # change for dataframe
             elif attributes.get(str(self.fid)).get("country"):
                 countries = JsonStore("countries.json")
                 country = countries.get(attributes.get(str(self.fid)).get("country"))
@@ -38,7 +40,14 @@ class RVHandler(Widget):
     markers_ontable = [Marker(0), Marker(1), Marker(2), Marker(11), Marker(12), Marker(21), Marker(22), Marker(24)]
     #markers_ontable = []
 
+    def loadData(self):
+        print("Loading")
+        self.indicatorData = {}
+        # Key --> indicator "0", "1"
+        # Data --> Pandas dataframe, based on filename generated from json
+
     def on_touch_down(self, touch):
+        print("On touch down") # put down all markers, see if on touch down prints before loading
         self.table_status()
         if "markerid" in touch.profile:
             marker = Marker(touch)
@@ -104,6 +113,7 @@ class RVHandler(Widget):
             x = indicators_mot[0]
             y = indicators_mot[1]
             for mot_entry in countries_mot:
+                # firstData = indicatorData[self.markers_ontable[x].indID]
                 end_plots.append(get_plot(self.markers_ontable[x], self.markers_ontable[y], self.markers_ontable[mot_entry]))
 
         print(end_plots)
@@ -118,7 +128,9 @@ class RVApp(App):
         Config.set("graphics", "left", 850)
         Config.set("graphics", "top",  100)
         # end deletable configuration
-        return RVHandler()
+        handler = RVHandler()
+        handler.loadData() # maybe put a sleep function after this to avoid overlap with touch -- load all CSV files
+        return handler
 
 if __name__ == "__main__":
     RVApp().run()
