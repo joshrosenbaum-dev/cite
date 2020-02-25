@@ -49,6 +49,15 @@ Run the Python file named `react.py`
 ```
 python react.py
 ```
+### Notes for Kivy Garden
+First, install Kivy Garden using
+```
+sudo pip install kivy-garden
+```
+Since we've already installed Matplotlib, we can add the backend for `garden.matplotlib` using
+```
+garden install matplotlib --kivy
+```
 ---
 ## Design Implentation
 We will be modeling our software after the Gapminder data set and how it displays data as bubbles. Using 5-8 countries with individual tabletop markers, we can select countries to display on our graph. Our X and Y indicators also come from tabletop markers that lock into each other to convey an X and Y assignment.  
