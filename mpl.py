@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+
 DEBUG_Y = 0
+
 def plotPoints(points, mark_x, mark_y):
     global DEBUG_Y
     plt.clf()
