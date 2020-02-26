@@ -12,10 +12,10 @@ from mpl import plotPoints
 
 
 class Marker:
-    def __init__(self, fid, jsonData):
+    def __init__(self, touch, jsonData):
         # Retrieve ID based on touch.fid, position based on touch.pos
-        self.fid = fid
-        self.pos = [100.0, 100.0]
+        self.fid = touch.fid
+        self.pos = touch.pos
         self.type = None
         self.indicator_id = None
         self.artifact_id = None
@@ -93,8 +93,8 @@ class MarkerHandler(Widget):
             self.artifactData[a] = loadedIcon
 
         self.markersOnTable = []
-        self.markersOnTable = [ Marker(0, self.jsonData), Marker(1, self.jsonData), Marker(2, self.jsonData), Marker(11, self.jsonData), 
-                                Marker(12, self.jsonData), Marker(21, self.jsonData), Marker(22, self.jsonData), Marker(24, self.jsonData)]
+        # self.markersOnTable = [ Marker(0, self.jsonData), Marker(1, self.jsonData), Marker(2, self.jsonData), Marker(11, self.jsonData), 
+                                # Marker(12, self.jsonData), Marker(21, self.jsonData), Marker(22, self.jsonData), Marker(24, self.jsonData)]
 
     def on_touch_down(self, touch):
         self.tableInit()
@@ -121,22 +121,22 @@ class MarkerHandler(Widget):
     def tableInit(self):
         indicatorsMOT, artifactsMOT, points = [], [], []
 
-        print("\nID\tIS_X\tIS_Y\tTIME\tPOSITION\t\tINDICATOR_ID\tCOUNTRY_ID\tTYPE (LABEL)")
-        print("===================================================================================================================")
-        if len(self.markersOnTable) == 0:
-            print("N/A\t No markers are on the table ------------------------------------------------------------------------------")
+        # print("\nID\tIS_X\tIS_Y\tTIME\tPOSITION\t\tINDICATOR_ID\tCOUNTRY_ID\tTYPE (LABEL)")
+        # print("===================================================================================================================")
+        # if len(self.markersOnTable) == 0:
+            # print("N/A\t No markers are on the table ------------------------------------------------------------------------------")
         for index, marker in enumerate(self.markersOnTable):
             if self.jsonData["attributes"].exists(str(marker.fid)):
                 if marker.type == "Indicator":
                     indicatorsMOT.append(index)
                 if marker.type == "Artifact":
                     artifactsMOT.append(index)
-                marker.to_string()
-            else:
-                print(marker.fid,"\t ----------------------------------------------------------------------------------------------------------")
+                # marker.to_string()
+            # else:
+                # print(marker.fid,"\t ----------------------------------------------------------------------------------------------------------")
 
-        print("\nINDICATORS_MOT:",indicatorsMOT,len(indicatorsMOT))
-        print("COUNTRIES_MOT:",artifactsMOT,len(artifactsMOT))
+        # print("\nINDICATORS_MOT:",indicatorsMOT,len(indicatorsMOT))
+        # print("COUNTRIES_MOT:",artifactsMOT,len(artifactsMOT))
 
         if len(indicatorsMOT) >= 2 and len(artifactsMOT) >= 1:
             x = indicatorsMOT[0]
