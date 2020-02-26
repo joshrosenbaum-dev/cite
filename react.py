@@ -1,32 +1,40 @@
+import matplotlib.pyplot as plt
+import pandas as pd
 from time import sleep
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-import matplotlib.pyplot as plt
 from kivy.storage.jsonstore import JsonStore
 from pandas_csv import getPoint
 from mpl import plotPoints
+
 
 class Marker:
     def __init__(self, fid, jsonData):
         # Retrieve ID based on touch.fid, position based on touch.pos
         self.fid = fid
         self.pos = [100.0, 100.0]
-        self.type = self.indicator_id = self.artifact_id = self.label = self.file = self.icon = None
-        self.is_x = self.is_y = self.is_time = False       
+        self.type = None
+        self.indicator_id = None
+        self.artifact_id = None
+        self.label = None
+        self.icon = None
+        self.is_x = False
+        self.is_y = False
+        self.is_time = False       
 
-        # TODO: Move to loadData in MarkerHandler(?)
-        attributes = jsonData["attributes"] # JsonStore("attributes.json")
-        indicators = jsonData["indicators"] # JsonStore("indicators.json")
-        artifacts = jsonData["artifacts"] # JsonStore("artifacts.json")
+        attributes = jsonData["attributes"]
+        indicators = jsonData["indicators"]
+        artifacts = jsonData["artifacts"]
         fid_str = str(self.fid)
 
         # Check if ID is in attributes table
         if attributes.exists(fid_str):
             attribute = attributes.get(fid_str)
             if attribute.get("is_x"):
+                # TODO: Make type an enum?
                 self.type = "X"
                 self.is_x = True
             elif attribute.get("is_y"):
@@ -40,8 +48,6 @@ class Marker:
                 self.indicator_id = attribute.get("indicator")
                 self.type = "Indicator"
                 self.label = indicator.get("label")
-                # TODO: Match indicator to preloaded dataframe vs. file
-                self.file = "csv/" + indicator.get("file")
             elif attribute.get("artifact"):
                 artifact = artifacts.get(attribute.get("artifact"))
                 self.artifact_id = attribute.get("artifact")
@@ -71,18 +77,24 @@ class MarkerHandler(Widget):
         self.myGraph = myGraph
         
         self.indicatorData = {}
+        indicators = self.jsonData["indicators"]
+        csvArtifact = "country"
         # Key --> indicator "0", "1"
         # Data --> Pandas dataframe, based on filename generated from JSON
+        for i in indicators:
+            loadedCSV = "csv/" + format(indicators[i].get("file"))
+            dataframe = pd.read_csv(loadedCSV, index_col = csvArtifact)
+            self.indicatorData[i] = dataframe
+
+        self.artifactData = {}
+        artifacts = self.jsonData["artifacts"]
+        for a in artifacts:
+            loadedIcon = "icons/" + format(artifacts[a].get("abbr")) + ".png"
+            self.artifactData[a] = loadedIcon
+
         self.markersOnTable = []
-        self.markersOnTable = [ Marker(0, self.jsonData), 
-                                Marker(1, self.jsonData), 
-                                Marker(2, self.jsonData), 
-                                Marker(11, self.jsonData), 
-                                Marker(12, self.jsonData), 
-                                Marker(21, self.jsonData), 
-                                Marker(22, self.jsonData), 
-                                Marker(24, self.jsonData) ]
-    
+        self.markersOnTable = [ Marker(0, self.jsonData), Marker(1, self.jsonData), Marker(2, self.jsonData), Marker(11, self.jsonData), 
+                                Marker(12, self.jsonData), Marker(21, self.jsonData), Marker(22, self.jsonData), Marker(24, self.jsonData)]
 
     def on_touch_down(self, touch):
         self.tableInit()
@@ -130,8 +142,9 @@ class MarkerHandler(Widget):
             x = indicatorsMOT[0]
             y = indicatorsMOT[1]
             for mot_entry in artifactsMOT:
-                # firstData = indicatorData[self.markersOnTable[x].indID]
-                points.append(getPoint(self.markersOnTable[x], self.markersOnTable[y], self.markersOnTable[mot_entry]))
+                xFrame = self.indicatorData[self.markersOnTable[x].indicator_id]
+                yFrame = self.indicatorData[self.markersOnTable[y].indicator_id]
+                points.append(getPoint(xFrame, yFrame, self.markersOnTable[mot_entry].label))
             plotPoints(points, self.markersOnTable[x], self.markersOnTable[y])
             self.myGraph.draw()
 
@@ -149,10 +162,10 @@ class ReactivisionApp(App):
         Handler = MarkerHandler()
         Handler.loadData(Canvas) 
         # Create app bounding box
-        box = BoxLayout()
-        box.add_widget(Handler)
-        box.add_widget(Canvas)
-        return box
+        Box = BoxLayout()
+        Box.add_widget(Handler)
+        Box.add_widget(Canvas)
+        return Box
 
 if __name__ == "__main__":
     ReactivisionApp().run()
