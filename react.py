@@ -9,6 +9,7 @@ from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.storage.jsonstore import JsonStore
 from pandas_csv import getPoint
 from mpl import plotPoints
+import datetime as dt
 
 
 class Marker:
@@ -95,9 +96,9 @@ class MarkerHandler(Widget):
         self.markersOnTable = []
         # self.markersOnTable = [ Marker(0, self.jsonData), Marker(1, self.jsonData), Marker(2, self.jsonData), Marker(11, self.jsonData), 
                                 # Marker(12, self.jsonData), Marker(21, self.jsonData), Marker(22, self.jsonData), Marker(24, self.jsonData)]
-
-    def on_touch_down(self, touch):
         self.tableInit()
+    
+    def on_touch_down(self, touch):
         if "markerid" in touch.profile:
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
@@ -111,14 +112,14 @@ class MarkerHandler(Widget):
             self.tableInit()
 
     def on_touch_move(self, touch):
-        self.tableInit()
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:   
                     marker.pos = touch.pos
-            self.tableInit()
+            #self.tableInit()
 
     def tableInit(self):
+        # starttime = dt.time.microsecond
         indicatorsMOT, artifactsMOT, points = [], [], []
 
         # print("\nID\tIS_X\tIS_Y\tTIME\tPOSITION\t\tINDICATOR_ID\tCOUNTRY_ID\tTYPE (LABEL)")
@@ -138,14 +139,20 @@ class MarkerHandler(Widget):
         # print("\nINDICATORS_MOT:",indicatorsMOT,len(indicatorsMOT))
         # print("COUNTRIES_MOT:",artifactsMOT,len(artifactsMOT))
 
-        if len(indicatorsMOT) >= 2 and len(artifactsMOT) >= 1:
+        if len(indicatorsMOT) >= 2:
             x = indicatorsMOT[0]
             y = indicatorsMOT[1]
             for mot_entry in artifactsMOT:
                 xFrame = self.indicatorData[self.markersOnTable[x].indicator_id]
                 yFrame = self.indicatorData[self.markersOnTable[y].indicator_id]
                 points.append(getPoint(xFrame, yFrame, self.markersOnTable[mot_entry].label))
-            plotPoints(points, self.markersOnTable[x], self.markersOnTable[y])
+                # endtime = dt.time.microsecond
+                # print("TIME:", (endtime-starttime))
+            plotPoints(points, self.markersOnTable[x].label, self.markersOnTable[y].label)
+            self.myGraph.draw()
+        
+        else:
+            plotPoints([], "Unspecified", "Unspecified")
             self.myGraph.draw()
 
 class ReactivisionApp(App):
