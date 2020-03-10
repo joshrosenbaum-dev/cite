@@ -103,7 +103,7 @@ class MarkerHandler(Widget):
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
             self.tableInit()
-            speak("Touch down marker number " + format(marker.fid))
+            speak("Adding" + format(marker.type) + format(marker.label))
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
@@ -117,7 +117,6 @@ class MarkerHandler(Widget):
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:   
                     marker.pos = touch.pos
-            #self.tableInit()
 
     def tableInit(self):
         # starttime = dt.time.microsecond
@@ -151,7 +150,6 @@ class MarkerHandler(Widget):
                 # print("TIME:", (endtime-starttime))
             plotPoints(points, self.markersOnTable[x].label, self.markersOnTable[y].label)
             self.myGraph.draw()
-        
         else:
             plotPoints([], "Unspecified", "Unspecified")
             self.myGraph.draw()
