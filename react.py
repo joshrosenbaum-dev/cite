@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import datetime as dt
 from time import sleep
 from kivy.app import App
 from kivy.config import Config
@@ -9,8 +10,7 @@ from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.storage.jsonstore import JsonStore
 from pandas_csv import getPoint
 from mpl import plotPoints
-import datetime as dt
-
+from tts import speak
 
 class Marker:
     def __init__(self, touch, jsonData):
@@ -103,6 +103,7 @@ class MarkerHandler(Widget):
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
             self.tableInit()
+            speak("Touch down marker number " + format(marker.fid))
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
