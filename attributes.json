@@ -8,10 +8,10 @@
     "14": {"indicator": "3"},
     "15": {"indicator": "4"},
     "16": {"indicator": "5"},
-    "21": {"country": "0"},
-    "22": {"country": "1"},
-    "23": {"country": "2"},
-    "24": {"country": "3"},
-    "25": {"country": "4"},
-    "26": {"country": "5"}
+    "21": {"artifact": "0"},
+    "22": {"artifact": "1"},
+    "23": {"artifact": "2"},
+    "24": {"artifact": "3"},
+    "25": {"artifact": "4"},
+    "26": {"artifact": "5"}
 }
