@@ -6,6 +6,7 @@ from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.storage.jsonstore import JsonStore
 from pandas_csv import getPoint
@@ -83,19 +84,24 @@ class MarkerHandler(Widget):
         # Key --> indicator "0", "1"
         # Data --> Pandas dataframe, based on filename generated from JSON
         for i in indicators:
-            loadedCSV = "csv/" + format(indicators[i].get("file"))
+            loadedCSV = "indicators/" + format(indicators[i].get("file"))
             dataframe = pd.read_csv(loadedCSV, index_col = csvArtifact)
             self.indicatorData[i] = dataframe
 
         self.artifactData = {}
         artifacts = self.jsonData["artifacts"]
         for a in artifacts:
-            loadedIcon = "icons/" + format(artifacts[a].get("abbr")) + ".png"
+            loadedIcon = "artifacts/icons/" + format(artifacts[a].get("abbr")) + ".png"
             self.artifactData[a] = loadedIcon
 
+        df_popByArtifact = pd.read_csv("artifacts/population_countries.csv", index_col = "name")
+        print(df_popByArtifact)
+
+        df_popByRegion = pd.read_csv("artifacts/population_regions.csv", index_col = "name")
+        print(df_popByRegion)
+
         self.markersOnTable = []
-        # self.markersOnTable = [ Marker(0, self.jsonData), Marker(1, self.jsonData), Marker(2, self.jsonData), Marker(11, self.jsonData), 
-                                # Marker(12, self.jsonData), Marker(21, self.jsonData), Marker(22, self.jsonData), Marker(24, self.jsonData)]
+        exit()
         self.tableInit()
     
     def on_touch_down(self, touch):
@@ -103,7 +109,7 @@ class MarkerHandler(Widget):
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
             self.tableInit()
-            speak("Adding" + format(marker.type) + format(marker.label))
+            # speak("Adding" + format(marker.type) + format(marker.label))
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
@@ -168,7 +174,7 @@ class ReactivisionApp(App):
         Handler = MarkerHandler()
         Handler.loadData(Canvas) 
         # Create app bounding box
-        Box = BoxLayout()
+        Box = FloatLayout()
         Box.add_widget(Handler)
         Box.add_widget(Canvas)
         return Box
