@@ -14,11 +14,14 @@ def plotPoints(points, label_x, label_y): #mark_x, mark_y):
     plt.ylabel(label_y)
     xc = []
     yc = []
+    sl = []
     for p in points:
         xc.append(p[0])    
         yc.append(p[1])
+        sl.append(p[2] / 100000)
+        plt.annotate(p[3], (p[0], p[1]))
         # print(p)
     # yc[-1] += DEBUG_Y
-    plt.plot(xc, yc, 'bo')
+    plt.scatter(xc, yc, sl)
     # DEBUG_Y += 1.0
     # print("\n")

@@ -22,7 +22,6 @@ class Marker:
         self.indicator_id = None
         self.artifact_id = None
         self.label = None
-        self.icon = None
         self.is_x = False
         self.is_y = False
         self.is_time = False       
@@ -55,7 +54,6 @@ class Marker:
                 self.artifact_id = attribute.get("artifact")
                 self.type = "Artifact"
                 self.label = artifact.get("label")
-                self.icon = "icons/" + artifact.get("abbr") + ".png"
    
     def to_string(self):
         print(self.fid,"\t", end = "")
@@ -70,7 +68,7 @@ class Marker:
 
 class MarkerHandler(Widget):  
     def loadData(self, myGraph):
-        print("Loading...")
+        print("[INFO   ] [--- CITE ---] Loading...")
         self.jsonData = {}
         self.jsonData["attributes"] = JsonStore("attributes.json")
         self.jsonData["indicators"] = JsonStore("indicators.json")
@@ -88,20 +86,17 @@ class MarkerHandler(Widget):
             dataframe = pd.read_csv(loadedCSV, index_col = csvArtifact)
             self.indicatorData[i] = dataframe
 
+        self.df_popSizeByArtifact = pd.read_csv("artifacts/population_countries.csv", index_col = "name")
+        self.df_popSizeByRegion = pd.read_csv("artifacts/population_regions.csv", index_col = "name")
+
         self.artifactData = {}
         artifacts = self.jsonData["artifacts"]
         for a in artifacts:
             loadedIcon = "artifacts/icons/" + format(artifacts[a].get("abbr")) + ".png"
             self.artifactData[a] = loadedIcon
 
-        df_popByArtifact = pd.read_csv("artifacts/population_countries.csv", index_col = "name")
-        print(df_popByArtifact)
-
-        df_popByRegion = pd.read_csv("artifacts/population_regions.csv", index_col = "name")
-        print(df_popByRegion)
-
         self.markersOnTable = []
-        exit()
+
         self.tableInit()
     
     def on_touch_down(self, touch):
@@ -151,7 +146,7 @@ class MarkerHandler(Widget):
             for mot_entry in artifactsMOT:
                 xFrame = self.indicatorData[self.markersOnTable[x].indicator_id]
                 yFrame = self.indicatorData[self.markersOnTable[y].indicator_id]
-                points.append(getPoint(xFrame, yFrame, self.markersOnTable[mot_entry].label))
+                points.append(getPoint(xFrame, yFrame, self.df_popSizeByArtifact, self.markersOnTable[mot_entry].label))
                 # endtime = dt.time.microsecond
                 # print("TIME:", (endtime-starttime))
             plotPoints(points, self.markersOnTable[x].label, self.markersOnTable[y].label)
