@@ -1,7 +1,3 @@
-import matplotlib.pyplot as plt
-import pandas as pd
-import datetime as dt
-from time import sleep
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.widget import Widget
@@ -9,9 +5,17 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.storage.jsonstore import JsonStore
+from playsound import playsound
+from time import sleep
+#################################
 from pandas_csv import getPoint
 from mpl import plotPoints
-from tts import speak
+from tts import saveTTS
+#################################
+import datetime as dt
+import matplotlib.pyplot as plt
+import pandas as pd
+import os, shutil
 
 class Marker:
     def __init__(self, touch, jsonData):
@@ -24,7 +28,8 @@ class Marker:
         self.label = None
         self.is_x = False
         self.is_y = False
-        self.is_time = False       
+        self.is_time = False
+        self.audio_saved = False   
 
         attributes = jsonData["attributes"]
         indicators = jsonData["indicators"]
@@ -75,7 +80,7 @@ class MarkerHandler(Widget):
         self.jsonData["artifacts"] = JsonStore("artifacts.json")
 
         self.myGraph = myGraph
-        
+     
         self.indicatorData = {}
         indicators = self.jsonData["indicators"]
         csvArtifact = "country"
@@ -95,6 +100,29 @@ class MarkerHandler(Widget):
             loadedIcon = "artifacts/icons/" + format(artifacts[a].get("abbr")) + ".png"
             self.artifactData[a] = loadedIcon
 
+        if os.path.exists("audio/"):
+            shutil.rmtree("audio/")
+        if not os.path.exists(os.path.join(os.getcwd(), "audio")):
+            os.makedirs("audio/")
+
+        self.audioData = {}
+        attributes = self.jsonData["attributes"]
+        for a in attributes:
+            attribute = attributes.get(a)
+            if attribute.get("is_x"):
+                self.audioData[a] = saveTTS(a, "X bucket")
+            elif attribute.get("is_y"):
+                self.audioData[a] = saveTTS(a, "Y bucket")
+            elif attribute.get("is_time"):
+                self.audioData[a] = saveTTS(a, "time dial")
+            elif attribute.get("indicator"):
+                indicator = indicators.get(attribute.get("indicator"))
+                self.audioData[a] = saveTTS(a, indicator.get("label"))
+            elif attribute.get("artifact"):
+                artifact = artifacts.get(attribute.get("artifact"))
+                self.audioData[a] = saveTTS(a, artifact.get("label"))
+        print(self.audioData)
+
         self.markersOnTable = []
 
         self.tableInit()
@@ -103,14 +131,17 @@ class MarkerHandler(Widget):
         if "markerid" in touch.profile:
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
+            if self.audioData[format(touch.fid)]:
+                playsound(self.audioData[format(touch.fid)][0])
             self.tableInit()
-            # speak("Adding" + format(marker.type) + format(marker.label))
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:
                     self.markersOnTable.remove(marker)
+                    if self.audioData[format(touch.fid)]:
+                        playsound(self.audioData[format(touch.fid)][1])
             self.tableInit()
 
     def on_touch_move(self, touch):
@@ -123,22 +154,12 @@ class MarkerHandler(Widget):
         # starttime = dt.time.microsecond
         indicatorsMOT, artifactsMOT, points = [], [], []
 
-        # print("\nID\tIS_X\tIS_Y\tTIME\tPOSITION\t\tINDICATOR_ID\tCOUNTRY_ID\tTYPE (LABEL)")
-        # print("===================================================================================================================")
-        # if len(self.markersOnTable) == 0:
-            # print("N/A\t No markers are on the table ------------------------------------------------------------------------------")
         for index, marker in enumerate(self.markersOnTable):
             if self.jsonData["attributes"].exists(str(marker.fid)):
                 if marker.type == "Indicator":
                     indicatorsMOT.append(index)
                 if marker.type == "Artifact":
                     artifactsMOT.append(index)
-                # marker.to_string()
-            # else:
-                # print(marker.fid,"\t ----------------------------------------------------------------------------------------------------------")
-
-        # print("\nINDICATORS_MOT:",indicatorsMOT,len(indicatorsMOT))
-        # print("COUNTRIES_MOT:",artifactsMOT,len(artifactsMOT))
 
         if len(indicatorsMOT) >= 2:
             x = indicatorsMOT[0]
@@ -167,7 +188,7 @@ class ReactivisionApp(App):
         # Create matplotlib canvas and pass graph to Handler class
         Canvas = FigureCanvasKivyAgg(plt.gcf())
         Handler = MarkerHandler()
-        Handler.loadData(Canvas) 
+        Handler.loadData(Canvas)
         # Create app bounding box
         Box = FloatLayout()
         Box.add_widget(Handler)
