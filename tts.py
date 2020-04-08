@@ -6,14 +6,14 @@ def saveTTS(fid, label):
     while (flag <= 1):
         if (flag == 0):
             status = "add"
-            string = "Adding " + label + "."
+            string = "Adding " + label
         if (flag == 1):
             status = "remove"
-            string = "Removing " + label + "."
+            string = "Removing " + label
         tts = gTTS(text=string, lang='en', slow=False)
         save_string = 'audio/' + format(fid) + '-' + status + '.mp3'
         tts.save(save_string)
         audioStrings.append(save_string)
-        # print("Created audio: '" + string + "' at /" + save_string)
+        print("[CITE   ] Creating audio: '" + string + "' at './" + save_string + "'")
         flag += 1
     return audioStrings
