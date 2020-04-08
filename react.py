@@ -13,6 +13,7 @@ from mpl import plotPoints
 from tts import saveTTS
 #################################
 import datetime as dt
+import hashlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import os, shutil
@@ -71,13 +72,68 @@ class Marker:
         print(self.type, end = " ")
         print("(" + format(self.label) + ")","\t")
 
-class MarkerHandler(Widget):  
-    def loadData(self, myGraph):
-        print("[INFO   ] [--- CITE ---] Loading...")
+class MarkerHandler(Widget):
+    def hashes(self, jsonFiles):
+        jsonHash = []
+        block_size = 65536  # 64KB
+        for r in range(len(jsonFiles)):
+            print
+            file = jsonFiles[r]
+            hash = hashlib.md5()
+            with open(file, 'rb') as f:
+                buffer = f.read(block_size)
+                while len(buffer) > 0:
+                    hash.update(buffer)
+                    buffer = f.read(block_size)
+            jsonHash.append(hash.hexdigest())
+        return jsonHash
+
+    def preloader(self, myGraph):
+        print("==========================================================================================")
+        print("Collaborative Tabletop for Education (CITE) v1.0.0")
+        print("==========================================================================================")
+        print("[CITE   ] Loading CITE...")
+
+        jsonFiles = ["attributes.json", "indicators.json", "artifacts.json"]
+        self.cacheMismatch = False
+        self.audioLoad = False
+
+        if os.path.exists("cache"):
+            cache = open("cache", "r")
+            jsonHash = self.hashes(jsonFiles)
+            fileHash = [line.rstrip() for line in cache]
+            cache.close()
+            
+            for j in range(len(jsonHash)):
+                if jsonHash[j] != fileHash[j]:
+                    print("[CITE   ] Cache mismatch for " + jsonFiles[j])
+                    print("[CITE   ] Deleting previously generated cache file")
+                    self.cacheMismatch = True
+                    break
+
+            if not self.cacheMismatch:
+                print("[CITE   ] Cached hashes match current JSON file hashes")
+                if len(fileHash) < 4:
+                    self.audioLoad = True
+                if len(fileHash) > 4:
+                    if fileHash[3] == "audio_written":
+                        print("[CITE   ] Using previously generated audio files")
+                    else:
+                        self.audioLoad = True
+
+        if self.cacheMismatch or not os.path.exists("cache"):
+            print("[CITE   ] Creating cache file './cache'")
+            cache = open("cache", "w")
+            jsonHash = self.hashes(jsonFiles)
+            for j in range(len(jsonHash)):
+                cache.write(jsonHash[j] + "\n")
+            cache.close()
+            self.audioLoad = True
+
         self.jsonData = {}
-        self.jsonData["attributes"] = JsonStore("attributes.json")
-        self.jsonData["indicators"] = JsonStore("indicators.json")
-        self.jsonData["artifacts"] = JsonStore("artifacts.json")
+        self.jsonData["attributes"] = JsonStore(jsonFiles[0])
+        self.jsonData["indicators"] = JsonStore(jsonFiles[1])
+        self.jsonData["artifacts"] = JsonStore(jsonFiles[2])
 
         self.myGraph = myGraph
      
@@ -100,30 +156,35 @@ class MarkerHandler(Widget):
             loadedIcon = "artifacts/icons/" + format(artifacts[a].get("abbr")) + ".png"
             self.artifactData[a] = loadedIcon
 
-        if os.path.exists("audio/"):
-            shutil.rmtree("audio/")
-        if not os.path.exists(os.path.join(os.getcwd(), "audio")):
-            os.makedirs("audio/")
-
         self.audioData = {}
         attributes = self.jsonData["attributes"]
-        for a in attributes:
-            attribute = attributes.get(a)
-            if attribute.get("is_x"):
-                self.audioData[a] = saveTTS(a, "X bucket")
-            elif attribute.get("is_y"):
-                self.audioData[a] = saveTTS(a, "Y bucket")
-            elif attribute.get("is_time"):
-                self.audioData[a] = saveTTS(a, "time dial")
-            elif attribute.get("indicator"):
-                indicator = indicators.get(attribute.get("indicator"))
-                self.audioData[a] = saveTTS(a, indicator.get("label"))
-            elif attribute.get("artifact"):
-                artifact = artifacts.get(attribute.get("artifact"))
-                self.audioData[a] = saveTTS(a, artifact.get("label"))
-        print(self.audioData)
+
+        if self.audioLoad:
+            if os.path.exists("audio/"):
+                shutil.rmtree("audio/")
+            if not os.path.exists(os.path.join(os.getcwd(), "audio")):
+                os.makedirs("audio/")
+            for a in attributes:
+                attribute = attributes.get(a)
+                if attribute.get("is_x"):
+                    self.audioData[a] = saveTTS(a, "X bucket")
+                elif attribute.get("is_y"):
+                    self.audioData[a] = saveTTS(a, "Y bucket")
+                elif attribute.get("is_time"):
+                    self.audioData[a] = saveTTS(a, "time dial")
+                elif attribute.get("indicator"):
+                    indicator = indicators.get(attribute.get("indicator"))
+                    self.audioData[a] = saveTTS(a, indicator.get("label"))
+                elif attribute.get("artifact"):
+                    artifact = artifacts.get(attribute.get("artifact"))
+                    self.audioData[a] = saveTTS(a, artifact.get("label"))
+            cache = open("cache", "a")
+            cache.write("audio_written")
+            cache.close()
 
         self.markersOnTable = []
+
+        print("==========================================================================================")
 
         self.tableInit()
     
@@ -188,7 +249,7 @@ class ReactivisionApp(App):
         # Create matplotlib canvas and pass graph to Handler class
         Canvas = FigureCanvasKivyAgg(plt.gcf())
         Handler = MarkerHandler()
-        Handler.loadData(Canvas)
+        Handler.preloader(Canvas)
         # Create app bounding box
         Box = FloatLayout()
         Box.add_widget(Handler)
