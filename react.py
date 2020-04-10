@@ -178,10 +178,14 @@ class MarkerHandler(Widget):
                 elif attribute.get("artifact"):
                     artifact = artifacts.get(attribute.get("artifact"))
                     self.audioData[a] = saveTTS(a, artifact.get("label"))
+            saveTTS(-1, "unknown marker")
             cache = open("cache", "a")
             cache.write("audio_written")
             cache.close()
-
+        else:
+            for a in attributes:
+                self.audioData[a] = ["audio/" + a + "-add.mp3", "audio/" + a + "-remove.mp3"]
+            
         self.markersOnTable = []
 
         print("==========================================================================================")
@@ -192,7 +196,9 @@ class MarkerHandler(Widget):
         if "markerid" in touch.profile:
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
-            if self.audioData[format(touch.fid)]:
+            if format(touch.fid) not in self.audioData:
+                playsound("audio/-1-add.mp3")
+            else:
                 playsound(self.audioData[format(touch.fid)][0])
             self.tableInit()
 
@@ -201,7 +207,9 @@ class MarkerHandler(Widget):
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:
                     self.markersOnTable.remove(marker)
-                    if self.audioData[format(touch.fid)]:
+                    if format(touch.fid) not in self.audioData:
+                        playsound("audio/-1-remove.mp3")
+                    else:
                         playsound(self.audioData[format(touch.fid)][1])
             self.tableInit()
 
