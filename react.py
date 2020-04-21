@@ -194,24 +194,43 @@ class MarkerHandler(Widget):
     
     def on_touch_down(self, touch):
         if "markerid" in touch.profile:
-            marker = Marker(touch, self.jsonData)
-            self.markersOnTable.append(marker)
-            if format(touch.fid) not in self.audioData:
-                playsound("audio/-1-add.mp3")
-            else:
-                playsound(self.audioData[format(touch.fid)][0])
-            self.tableInit()
+            # marker = Marker(touch, self.jsonData)
+            print("X: " + format(touch.x) + 
+            " Y: " + format(touch.y) + 
+            " Z: " + format(touch.z) + 
+            " 0: " + format(touch.angle) + 
+            "      Shape: " + format(touch.shape) + "\n" +
+            " OPOS: " + format(touch.spos) + "\n")
+            # self.markersOnTable.append(marker)
+            # if format(touch.fid) not in self.audioData:
+            #     playsound("audio/-1-add.mp3")
+            # else:
+            #     playsound(self.audioData[format(touch.fid)][0])
+            # self.tableInit()
+            
+
+            # Note: camera is 800x600, base distances on the fact that markers are 100x100
+            # scale factor * size of bucket markers - factor can't be less than .5, probably MORE.
+            # Use a global scale factor variable and size of bucket markers -- all fidicual markers are 100px given 800x600 camera size
+
+            # Constant = any marker size in px
+            # We should assume 800x600 camera image - if it's 100 px, figure out screen scale, adjust accordingly
+            # If resolution changes -- we can adjust - rn we worry about the table size.
+            # Any calculations on dist (min distance between )
+
+            # Eventually, ask Kivy for camera resolution. Use 100 for 800x600 as a ratio, possibly, scale when we can.
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:
-                    self.markersOnTable.remove(marker)
-                    if format(touch.fid) not in self.audioData:
-                        playsound("audio/-1-remove.mp3")
-                    else:
-                        playsound(self.audioData[format(touch.fid)][1])
-            self.tableInit()
+                    pass
+                    # self.markersOnTable.remove(marker)
+            #         if format(touch.fid) not in self.audioData:
+            #             playsound("audio/-1-remove.mp3")
+            #         else:
+            #             playsound(self.audioData[format(touch.fid)][1])
+            # self.tableInit()
 
     def on_touch_move(self, touch):
         if "markerid" in touch.profile:
@@ -242,7 +261,7 @@ class MarkerHandler(Widget):
             plotPoints(points, self.markersOnTable[x].label, self.markersOnTable[y].label)
             self.myGraph.draw()
         else:
-            plotPoints([], "Unspecified", "Unspecified")
+            plotPoints([], None, None)
             self.myGraph.draw()
 
 class ReactivisionApp(App):

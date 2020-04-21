@@ -5,11 +5,14 @@ import datetime as dt
 
 # DEBUG_Y = 0
 
-def plotPoints(points, label_x, label_y): #mark_x, mark_y):
+def plotPoints(points, label_x, label_y): #mark_x, mark_y):      
     # print("Plotting points", dt.datetime.now())
     # global DEBUG_Y
     plt.clf()
-    plt.suptitle(label_x + " vs. " + label_y)
+    if label_x == None or label_y == None:
+        plt.suptitle("Please place markers on the table to display a graph!")
+    else:
+        plt.suptitle(label_x + " vs. " + label_y)
     plt.xlabel(label_x)
     plt.ylabel(label_y)
     xc = []
