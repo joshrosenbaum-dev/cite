@@ -22,7 +22,7 @@ def plotPoints(points, label_x, label_y): #mark_x, mark_y):
         xc.append(p[0])    
         yc.append(p[1])
         sl.append(p[2] / 100000)
-        plt.annotate(p[3], (p[0], p[1]))
+        plt.annotate(p[3].upper(), (p[0], p[1]))
         # print(p)
     # yc[-1] += DEBUG_Y
     plt.scatter(xc, yc, sl)
