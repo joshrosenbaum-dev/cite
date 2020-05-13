@@ -247,15 +247,19 @@ class MarkerHandler(Widget):
         for index, marker in enumerate(self.markersOnTable):
             if self.jsonData["attributes"].exists(str(marker.fid)):
                 if marker.type == "Indicator":
+                    print("I")
                     indicatorsMOT.append(index)
                 if marker.type == "Artifact":
                     artifactsMOT.append(index)
                 if marker.type == "X":
+                    print("X")
                     x_index = index
                 if marker.type == "Y":
+                    print("Y")
                     y_index = index
 
         if len(indicatorsMOT) >= 2:
+            print("Start")
             if x_index:
                 self.markersOnTable[x_index].toString()
             if y_index:
@@ -273,6 +277,7 @@ class MarkerHandler(Widget):
             plotPoints(points, self.markersOnTable[x].label, self.markersOnTable[y].label)
             self.myGraph.draw()
         else:
+            print("Not enough points")
             plotPoints([], None, None)
             self.myGraph.draw()
 
