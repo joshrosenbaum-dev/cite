@@ -96,6 +96,23 @@ class MarkerHandler(Widget):
         print("==========================================================================================")
         print("[CITE   ] Loading CITE...")
 
+        print("\n")
+        markersPos = [[400, 200], [401, 201], [398, 198]]
+        bucketPos = [455, 255]
+        for x in range(3):
+            # Figure out differences in position:
+            markerPos = markersPos[x]
+            print(markerPos)
+            print(bucketPos)
+            dbX = bucketPos[0] - markerPos[0]
+            dbY = bucketPos[1] - markerPos[1]
+            diffBetween = [dbX, dbY, dbX + dbY]
+            print(diffBetween)
+            print("\n")
+        
+
+        exit()
+
         jsonFiles = ["attributes.json", "indicators.json", "artifacts.json"]
         self.cacheMismatch = False
         self.audioLoad = False
