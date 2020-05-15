@@ -79,7 +79,6 @@ class MarkerHandler(Widget):
         jsonHash = []
         block_size = 65536  # 64KB
         for r in range(len(jsonFiles)):
-            print
             file = jsonFiles[r]
             hash = hashlib.md5()
             with open(file, 'rb') as f:
@@ -245,7 +244,7 @@ class MarkerHandler(Widget):
         padding = 10
 
         if len(self.markersOnTable) > 0:
-            print("[CITE   ] Indexing markers...")
+            # print("[CITE   ] Indexing markers...")
             for index, marker in enumerate(self.markersOnTable):
                 if self.jsonData["attributes"].exists(str(marker.fid)):
                     if marker.type == "Indicator":
@@ -261,7 +260,7 @@ class MarkerHandler(Widget):
             # print("Current Y index:", y_index)
             
             if len(indicatorsMOT) >= 2:
-                print("[CITE   ] There are enough indicators on the table.")
+                # print("[CITE   ] There are enough indicators on the table.")
 
                 if x_index != -1 and y_index != -1:
                     # print("X ==========")
@@ -270,7 +269,7 @@ class MarkerHandler(Widget):
                     # self.markersOnTable[y_index].toString()
 
                     # Find X:
-                    print("[CITE   ] Seeking markers for X...")
+                    # print("[CITE   ] Seeking markers for X...")
                     currentDiff = markerSize + padding
                     for index in range(len(indicatorsMOT)):
                         marker = self.markersOnTable[indicatorsMOT[index]]
@@ -287,7 +286,7 @@ class MarkerHandler(Widget):
                             # x.toString()
 
                     # Find Y:
-                    print("[CITE   ] Seeking markers for Y...")
+                    # print("[CITE   ] Seeking markers for Y...")
                     currentDiff = markerSize + padding
                     for index in range(len(indicatorsMOT)):
                         marker = self.markersOnTable[indicatorsMOT[index]]
@@ -304,7 +303,7 @@ class MarkerHandler(Widget):
                             # y.toString()
                             
                 if x != None and y != None:
-                    print("[CITE   ] Generating graph with indicators.\n")
+                    # print("[CITE   ] Generating graph with indicators.\n")
                     for mot_entry in artifactsMOT:
                         xFrame = self.indicatorData[x.indicator_id]
                         yFrame = self.indicatorData[y.indicator_id]
@@ -312,11 +311,11 @@ class MarkerHandler(Widget):
                     plotPoints(points, x.label, y.label)
                     self.myGraph.draw()
                 else:
-                    print("[CITE   ] Not enough inidcators in range.\n")
+                    # print("[CITE   ] Not enough inidcators in range.\n")
                     plotPoints([], None, None)
                     self.myGraph.draw()
             else:
-                print("[CITE   ] There are not enough indicators on the table.\n")
+                # print("[CITE   ] There are not enough indicators on the table.\n")
                 plotPoints([], None, None)
                 self.myGraph.draw()
 
