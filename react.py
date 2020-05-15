@@ -96,23 +96,6 @@ class MarkerHandler(Widget):
         print("==========================================================================================")
         print("[CITE   ] Loading CITE...")
 
-        print("\n")
-        markersPos = [[400, 200], [401, 201], [398, 198]]
-        bucketPos = [455, 255]
-        for x in range(3):
-            # Figure out differences in position:
-            markerPos = markersPos[x]
-            print(markerPos)
-            print(bucketPos)
-            dbX = bucketPos[0] - markerPos[0]
-            dbY = bucketPos[1] - markerPos[1]
-            diffBetween = [dbX, dbY, dbX + dbY]
-            print(diffBetween)
-            print("\n")
-        
-
-        exit()
-
         jsonFiles = ["attributes.json", "indicators.json", "artifacts.json"]
         self.cacheMismatch = False
         self.audioLoad = False
@@ -214,29 +197,12 @@ class MarkerHandler(Widget):
     def on_touch_down(self, touch):
         if "markerid" in touch.profile:
             marker = Marker(touch, self.jsonData)
-            # print("X: " + format(touch.x) + 
-            # " Y: " + format(touch.y) + 
-            # " Z: " + format(touch.z) + 
-            # " 0: " + format(touch.angle) +    # Does not track marker rotation
-            # "      Shape: " + format(touch.shape) + "\n" +    # Shape is "None"
-            # " OPOS: " + format(touch.spos) + "\n")
             self.markersOnTable.append(marker)
             # if format(touch.fid) not in self.audioData:
             #     playsound("audio/-1-add.mp3")
             # else:
             #     playsound(self.audioData[format(touch.fid)][0])
             self.tableInit()
-            
-            # Note: camera is 800x600, base distances on the fact that markers are 110x110
-            # scale factor * size of bucket markers - factor can't be less than .5, probably MORE.
-            # Use a global scale factor variable and size of bucket markers -- all fidicual markers are 110px given 800x600 camera size
-
-            # Constant = any marker size in px
-            # We should assume 800x600 camera image - if it's 110 px, figure out screen scale, adjust accordingly
-            # If resolution changes -- we can adjust - rn we worry about the table size.
-            # Any calculations on dist (min distance between )
-
-            # Eventually, ask Kivy for camera resolution. Use 110 for 800x600 as a ratio, possibly, scale when we can.
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
@@ -254,49 +220,105 @@ class MarkerHandler(Widget):
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:   
                     marker.pos = touch.pos
+                    self.tableInit()
 
     def tableInit(self):
-        # starttime = dt.time.microsecond
         indicatorsMOT, artifactsMOT, points = [], [], []
-        x_index = None
-        y_index = None
 
-        for index, marker in enumerate(self.markersOnTable):
-            if self.jsonData["attributes"].exists(str(marker.fid)):
-                if marker.type == "Indicator":
-                    print("I")
-                    indicatorsMOT.append(index)
-                if marker.type == "Artifact":
-                    artifactsMOT.append(index)
-                if marker.type == "X":
-                    print("X")
-                    x_index = index
-                if marker.type == "Y":
-                    print("Y")
-                    y_index = index
+        x_index = -1
+        y_index = -1
+        x = None
+        y = None
 
-        if len(indicatorsMOT) >= 2:
-            print("Start")
-            if x_index:
-                self.markersOnTable[x_index].toString()
-            if y_index:
-                self.markersOnTable[y_index].toString()
-            if x_index or y_index:
-                print("\n")
-            x = indicatorsMOT[0]
-            y = indicatorsMOT[1]
-            for mot_entry in artifactsMOT:
-                xFrame = self.indicatorData[self.markersOnTable[x].indicator_id]
-                yFrame = self.indicatorData[self.markersOnTable[y].indicator_id]
-                points.append(getPoint(xFrame, yFrame, self.df_popSizeByArtifact, self.markersOnTable[mot_entry]))
-                # endtime = dt.time.microsecond
-                # print("TIME:", (endtime-starttime))
-            plotPoints(points, self.markersOnTable[x].label, self.markersOnTable[y].label)
-            self.myGraph.draw()
-        else:
-            print("Not enough points")
-            plotPoints([], None, None)
-            self.myGraph.draw()
+        # Note: camera is 800x600, base distances on the fact that markers are 110x110
+        # scale factor * size of bucket markers - factor can't be less than .5, probably MORE.
+        # Use a global scale factor variable and size of bucket markers -- all fidicual markers are 110px given 800x600 camera size
+
+        # Constant = any marker size in px
+        # We should assume 800x600 camera image - if it's 110 px, figure out screen scale, adjust accordingly
+        # If resolution changes -- we can adjust - rn we worry about the table size.
+        # Any calculations on dist (min distance between )
+
+        # Eventually, ask Kivy for camera resolution. Use 110 for 800x600 as a ratio, possibly, scale when we can.
+    
+        markerSize = 110
+        padding = 10
+
+        if len(self.markersOnTable) > 0:
+            print("[CITE   ] Indexing markers...")
+            for index, marker in enumerate(self.markersOnTable):
+                if self.jsonData["attributes"].exists(str(marker.fid)):
+                    if marker.type == "Indicator":
+                        indicatorsMOT.append(index)
+                    if marker.type == "Artifact":
+                        artifactsMOT.append(index)
+                    if marker.type == "X":
+                        x_index = index
+                    if marker.type == "Y":
+                        y_index = index
+
+            # print("Current X index:", x_index)
+            # print("Current Y index:", y_index)
+            
+            if len(indicatorsMOT) >= 2:
+                print("[CITE   ] There are enough indicators on the table.")
+
+                if x_index != -1 and y_index != -1:
+                    # print("X ==========")
+                    # self.markersOnTable[x_index].toString()
+                    # print("Y ==========")
+                    # self.markersOnTable[y_index].toString()
+
+                    # Find X:
+                    print("[CITE   ] Seeking markers for X...")
+                    currentDiff = markerSize + padding
+                    for index in range(len(indicatorsMOT)):
+                        marker = self.markersOnTable[indicatorsMOT[index]]
+                        bucket = self.markersOnTable[x_index]
+                        # print("Marker:", marker.label, marker.pos, "Bucket:", bucket.pos)
+                        dbX = abs(bucket.pos[0] - marker.pos[0])
+                        dbY = abs(bucket.pos[1] - marker.pos[1])
+                        diffBetween = [dbX, dbY, dbX + dbY]
+                        # print(diffBetween[2])
+                        if diffBetween[2] <= currentDiff:
+                            currentDiff = diffBetween[2]
+                            x = marker
+                            # print("X ==========")
+                            # x.toString()
+
+                    # Find Y:
+                    print("[CITE   ] Seeking markers for Y...")
+                    currentDiff = markerSize + padding
+                    for index in range(len(indicatorsMOT)):
+                        marker = self.markersOnTable[indicatorsMOT[index]]
+                        bucket = self.markersOnTable[y_index]
+                        # print("Marker:", marker.label, marker.pos, "Bucket:", bucket.pos)
+                        dbX = abs(bucket.pos[0] - marker.pos[0])
+                        dbY = abs(bucket.pos[1] - marker.pos[1])
+                        diffBetween = [dbX, dbY, dbX + dbY]
+                        # print(diffBetween[2])
+                        if diffBetween[2] <= currentDiff:
+                            currentDiff = diffBetween[2]
+                            y = marker
+                            # print("Y ==========")
+                            # y.toString()
+                            
+                if x != None and y != None:
+                    print("[CITE   ] Generating graph with indicators.\n")
+                    for mot_entry in artifactsMOT:
+                        xFrame = self.indicatorData[x.indicator_id]
+                        yFrame = self.indicatorData[y.indicator_id]
+                        points.append(getPoint(xFrame, yFrame, self.df_popSizeByArtifact, self.markersOnTable[mot_entry]))
+                    plotPoints(points, x.label, y.label)
+                    self.myGraph.draw()
+                else:
+                    print("[CITE   ] Not enough inidcators in range.\n")
+                    plotPoints([], None, None)
+                    self.myGraph.draw()
+            else:
+                print("[CITE   ] There are not enough indicators on the table.\n")
+                plotPoints([], None, None)
+                self.myGraph.draw()
 
 class ReactivisionApp(App):
     def build(self):
