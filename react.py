@@ -197,22 +197,22 @@ class MarkerHandler(Widget):
         if "markerid" in touch.profile:
             marker = Marker(touch, self.jsonData)
             self.markersOnTable.append(marker)
-            # if format(touch.fid) not in self.audioData:
-            #     playsound("audio/-1-add.mp3")
-            # else:
-            #     playsound(self.audioData[format(touch.fid)][0])
             self.tableInit()
+            if format(touch.fid) not in self.audioData:
+                playsound("audio/-1-add.mp3")
+            else:
+                playsound(self.audioData[format(touch.fid)][0])
 
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fid == touch.fid:
                     self.markersOnTable.remove(marker)
-                    # if format(touch.fid) not in self.audioData:
-                    #     playsound("audio/-1-remove.mp3")
-                    # else:
-                    #     playsound(self.audioData[format(touch.fid)][1])
-            self.tableInit()
+                    self.tableInit()
+                    if format(touch.fid) not in self.audioData:
+                        playsound("audio/-1-remove.mp3")
+                    else:
+                        playsound(self.audioData[format(touch.fid)][1])
 
     def on_touch_move(self, touch):
         if "markerid" in touch.profile:
@@ -318,6 +318,10 @@ class MarkerHandler(Widget):
                 # print("[CITE   ] There are not enough indicators on the table.\n")
                 plotPoints([], None, None)
                 self.myGraph.draw()
+        else:
+            # print("[CITE   ] There are not enough markers on the table.\n")
+            plotPoints([], None, None)
+            self.myGraph.draw()
 
 class ReactivisionApp(App):
     def build(self):
