@@ -1,4 +1,4 @@
-#   preloader.py
+#   handler.py
 #   -------------------------------------------------------
 #   Initial loading of JSON attributes, audio, and marker
 #   reference data.
@@ -18,7 +18,7 @@ class MarkerType(Enum):
     ARTIFACT = "Artifact"
     INDICATOR = "Indicator"
 
-class Preloader(Widget):
+class CITEHandler(Widget):
     def generateAudio(self, audioLoc, fidicualID, string):
         tts = gTTS(text = string, lang = 'en', slow = False)
         saveFile = audioLoc + format(fidicualID) + ".mp3"
@@ -40,7 +40,7 @@ class Preloader(Widget):
             jsonHashes.append(hash.hexdigest())
         return jsonHashes
 
-    def load(self, graph):
+    def load(self):
         print("==========================================================================================")
         print("Collaborative Interactive Tabletop for Education (CITE) v1.0.0")
         print("==========================================================================================")
@@ -151,3 +151,4 @@ class Preloader(Widget):
         print("==========================================================================================")
 
         # self.tableInit()
+        return self
