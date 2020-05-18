@@ -10,11 +10,11 @@ These instructions will allow you to set up the script on your local machine.
 * [ReacTIVision](http://reactivision.sourceforge.net/) and a working webcam/tabletop interface (with a camera included)
 * [Anaconda / Python 3.7](https://www.anaconda.com/distribution/) or [Miniconda / Python 3.7](https://docs.conda.io/en/latest/miniconda.html) - or virtualenv/venv with a Python 3.7 installation
 * [Kivy](https://www.kivy.org) (can be installed via `conda` or `pip` - we used `conda`)
-* [oscpy](https://pypi.org/project/oscpy/) (can be installed via `pip`)
-* [pandas]
-* [matplotlib]
-* [playsound]
-* [Google Text-to-Speech (gTTS)]
+* [oscpy](https://pypi.org/project/oscpy/)
+* [pandas](https://pandas.pydata.org/)
+* [matplotlib](https://matplotlib.org/)
+* [playsound](https://pypi.org/project/playsound/)
+* [gTTS (Google Text-to-Speech)](https://pypi.org/project/gTTS/)
 
 ### Notes for Visual Studio Code
 If you are running Visual Studio Code, you **must** have your environment setup first. You will then use your environment as your Python interpreter. Then you may install PyLint either using conda or pip in your environment.
