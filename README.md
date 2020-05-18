@@ -1,1 +1,1 @@
-# CITE: Collaborative Interactive Tabletop for Education (Async Refactor)
+# CITE: Collaborative Interactive Tabletop for Education (Refactor)

@@ -1,5 +1,2 @@
-.vscode
-/examples
+/json/cache
 /audio
-cache
-__pycache__
