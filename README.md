@@ -1,4 +1,4 @@
-# CITE: Collaborative Tabletop for Education
+# CITE: Collaborative Interactive Tabletop for Education
 The base purpose of this software is to allow a user to use fidicual markers on a tabletop interface to visualize data. Based on DataBlocks Visualizations (https://www.datablocks.org), the markers will be placed as token objects that can be manipulated in position to visualize the Gapminder data set (https://www.gapminder.org). We will be using ReacTIVision to retrieve the marker's position from the table, oscpy to retrieve our TUIO packets (from ReacTIVision), and Kivy's natural user interface environment to develop a single-window program in an object-oriented fashion.
 
 Future implentation requires a graphic library such as Matplotlib (https://matplotlib.org/) to display our information as a bubble graph, similar to what Gapminder does. By using CITE, students and researchers can use plot points to ask questions about the data set that provide new global perspectives.
