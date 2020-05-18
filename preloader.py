@@ -186,14 +186,7 @@ class CITEPreloader(Widget):
             
         self.graph = []
 
-        self.markersOnTable = [m.Marker(0, self.markerData), m.Marker(1, self.markerData), m.Marker(2, self.markerData),
-                               m.Marker(11, self.markerData), m.Marker(12, self.markerData), m.Marker(13, self.markerData),
-                               m.Marker(14, self.markerData), m.Marker(15, self.markerData), m.Marker(16, self.markerData),
-                               m.Marker(21, self.markerData), m.Marker(22, self.markerData), m.Marker(23, self.markerData),
-                               m.Marker(24, self.markerData), m.Marker(25, self.markerData), m.Marker(26, self.markerData)]
-
-        for index in range(0, len(self.markersOnTable)):
-            print(self.markersOnTable[index])
+        self.markersOnTable = []
 
         print("==========================================================================================")
 
