@@ -1,24 +1,17 @@
-#   handler.py
+#   preloader.py
 #   -------------------------------------------------------
 #   Initial loading of JSON attributes, audio, and marker
 #   reference data.
 #
 #   https://kivy.org/doc/stable/api-kivy.storage.html
 
-from enum import Enum
 from gtts import gTTS
 from kivy.storage.jsonstore import JsonStore
 from kivy.uix.widget import Widget
 import hashlib, os, pandas, shutil
+import marker as m
 
-class MarkerType(Enum):
-    X = "X Bucket"
-    Y = "Y Bucket"
-    TIME = "Time Dial"
-    ARTIFACT = "Artifact"
-    INDICATOR = "Indicator"
-
-class CITEHandler(Widget):
+class CITEPreloader(Widget):
     def generateAudio(self, audioLoc, fidicualID, string):
         tts = gTTS(text = string, lang = 'en', slow = False)
         saveFile = audioLoc + format(fidicualID) + ".mp3"
@@ -40,7 +33,7 @@ class CITEHandler(Widget):
             jsonHashes.append(hash.hexdigest())
         return jsonHashes
 
-    def load(self):
+    def load(self, graphCanvas):
         print("==========================================================================================")
         print("Collaborative Interactive Tabletop for Education (CITE) v1.0.0")
         print("==========================================================================================")
@@ -114,7 +107,7 @@ class CITEHandler(Widget):
         #   class to determine the Marker's class variable values.
 
         self.markerData = {}
-        # artifacts = self.jsonData["artifacts"]
+        artifacts = self.jsonData["artifacts"]
         attributes = self.jsonData["attributes"]
 
         if self.loadAttributes:
@@ -125,30 +118,83 @@ class CITEHandler(Widget):
                 self.generateAudio(audioLoc, "-add", "Adding")
                 self.generateAudio(audioLoc, "-rem", "Removing")
                 self.generateAudio(audioLoc, "-unk", "Unknown Marker")
-            for index in attributes:
-                attribute = attributes.get(index)
-                if attribute.get("is_x"):
-                    self.markerData[index] = self.generateAudio(audioLoc, index, MarkerType.X.value)
-                elif attribute.get("is_y"):
-                    self.markerData[index] = self.generateAudio(audioLoc, index, MarkerType.Y.value)
-                elif attribute.get("is_time"):
-                    self.markerData[index] = self.generateAudio(audioLoc, index, MarkerType.TIME.value)
-                elif attribute.get("indicator"):
-                    pass
-                    # indicator = indicators.get(attribute.get("indicator"))
-                elif attribute.get("artifact"):
-                    pass
-                    # artifact = artifacts.get(attribute.get("artifact"))
+
+        for index in attributes:
+            attribute = attributes.get(index)
+            if attribute.get("is_x"):
+                if self.loadAttributes:
+                    markerAudio = self.generateAudio(audioLoc, index, m.MarkerType.X.value)
+                else:
+                    markerAudio = audioLoc + index + ".mp3"
+                self.markerData[index] = {
+                    "audio": markerAudio,
+                    "label": m.MarkerType.X.value,
+                    "type": m.MarkerType.X
+                }                        
+            elif attribute.get("is_y"):
+                if self.loadAttributes:
+                    markerAudio = self.generateAudio(audioLoc, index, m.MarkerType.Y.value)
+                else:
+                    markerAudio = audioLoc + index + ".mp3"
+                self.markerData[index] = {
+                    "audio": markerAudio,
+                    "label": m.MarkerType.Y.value,
+                    "type": m.MarkerType.Y
+                }    
+            elif attribute.get("is_time"):
+                if self.loadAttributes:
+                    markerAudio = self.generateAudio(audioLoc, index, m.MarkerType.TIME.value)
+                else:
+                    markerAudio = audioLoc + index + ".mp3"
+                self.markerData[index] = {
+                    "audio": markerAudio,
+                    "label": m.MarkerType.TIME.value,
+                    "type": m.MarkerType.TIME
+                }    
+            elif attribute.get("indicator"):
+                indicatorID = attribute.get("indicator")
+                indicator = indicators.get(indicatorID)
+                if self.loadAttributes:
+                    markerAudio = self.generateAudio(audioLoc, index, indicator.get("label"))
+                else:
+                    markerAudio = audioLoc + index + ".mp3"
+                self.markerData[index] = {
+                    "audio": markerAudio,
+                    "label": indicator.get("label"),
+                    "type": m.MarkerType.INDICATOR,
+                    "indicator_id": indicatorID
+                }   
+            elif attribute.get("artifact"):
+                artifactID = attribute.get("artifact")
+                artifact = artifacts.get(artifactID)
+                if self.loadAttributes:
+                    markerAudio = self.generateAudio(audioLoc, index, artifact.get("label"))
+                else:
+                    markerAudio = audioLoc + index + ".mp3"
+                self.markerData[index] = {
+                    "audio": markerAudio,
+                    "label": artifact.get("label"),
+                    "type": m.MarkerType.ARTIFACT,
+                    "artifact_id": artifactID,
+                    "artifact_abbr": artifact.get("abbr")
+                }
+
+        if self.loadAttributes:  
             cache = open(jsonCacheLoc, "a")
             cache.write("audio_written")
             cache.close()
-        else:
-            for index in attributes:
-                self.markerData[index] = [audioLoc + index + ".mp3"]
             
-        self.markersOnTable = []
+        self.graph = []
+
+        self.markersOnTable = [m.Marker(0, self.markerData), m.Marker(1, self.markerData), m.Marker(2, self.markerData),
+                               m.Marker(11, self.markerData), m.Marker(12, self.markerData), m.Marker(13, self.markerData),
+                               m.Marker(14, self.markerData), m.Marker(15, self.markerData), m.Marker(16, self.markerData),
+                               m.Marker(21, self.markerData), m.Marker(22, self.markerData), m.Marker(23, self.markerData),
+                               m.Marker(24, self.markerData), m.Marker(25, self.markerData), m.Marker(26, self.markerData)]
+
+        for index in range(0, len(self.markersOnTable)):
+            print(self.markersOnTable[index])
 
         print("==========================================================================================")
 
-        # self.tableInit()
         return self
