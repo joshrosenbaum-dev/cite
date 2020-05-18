@@ -1,3 +1,9 @@
+#   main.py
+#   -------------------------------------------------------
+#   Main application file -- generates mathplotlib graph
+#   texture that's applied to the main window, ties together
+#   preloader and touch handlers.
+
 from kivy.app import App
 from kivy.config import Config
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
