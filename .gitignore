@@ -1,2 +1,5 @@
-/json/cache
+__pycache__
+.vscode
+
 /audio
+/json/cache
