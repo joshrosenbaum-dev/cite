@@ -1,8 +1,11 @@
 from kivy.app import App
 from kivy.config import Config
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
-import handler as ch
+import preloader as pl
+import matplotlib.pyplot as plt
 
 class CITEApp(App):
     def build(self):
@@ -14,10 +17,11 @@ class CITEApp(App):
         #   Create the application bounding box:
         #   https://kivy.org/doc/stable/api-kivy.uix.floatlayout.html?highlight=floatlayout
 
-        CITEHandler = ch.CITEHandler()
-        self = CITEHandler.load()
         Window = FloatLayout()
-        Window.add_widget(self)
+        graphCanvas = FigureCanvasKivyAgg(plt.gcf())
+        CITEPreloader = pl.CITEPreloader()
+        self = CITEPreloader.load(graphCanvas)
+        Window.add_widget(graphCanvas)
         return Window
 
 if __name__ == "__main__":
