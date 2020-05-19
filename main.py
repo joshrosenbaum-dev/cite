@@ -11,6 +11,7 @@ from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 import preloader as pl
+import table as t
 import matplotlib.pyplot as plt
 
 class CITEApp(App):
@@ -27,6 +28,8 @@ class CITEApp(App):
         graphCanvas = FigureCanvasKivyAgg(plt.gcf())
         CITEPreloader = pl.CITEPreloader()
         self = CITEPreloader.load(graphCanvas)
+        tableEvents = t.TableHandler()
+        Window.add_widget(tableEvents)
         Window.add_widget(graphCanvas)
         return Window
 

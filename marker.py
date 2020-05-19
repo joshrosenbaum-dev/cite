@@ -23,10 +23,10 @@ class MarkerType(Enum):
     INDICATOR = "Indicator"
     
 class Marker:
-    def __init__(self, id, markerData):
+    def __init__(self, touch, markerData):
         #   Class variables based on touch profile:
-        self.currentPos = (0.0, 0.0)
-        self.fidicualID = id
+        self.currentPos = touch.pos
+        self.fidicualID = touch.fid
 
         #   Custom class variables:
         self.artifactID = None
