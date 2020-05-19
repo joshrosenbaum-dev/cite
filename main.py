@@ -27,8 +27,9 @@ class CITEApp(App):
         Window = FloatLayout()
         graphCanvas = FigureCanvasKivyAgg(plt.gcf())
         CITEPreloader = pl.CITEPreloader()
-        self = CITEPreloader.load(graphCanvas)
+        package = CITEPreloader.load(graphCanvas)
         tableEvents = t.TableHandler()
+        tableEvents.generateTable(package)
         Window.add_widget(tableEvents)
         Window.add_widget(graphCanvas)
         return Window
