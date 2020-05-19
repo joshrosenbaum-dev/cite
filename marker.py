@@ -26,7 +26,7 @@ class Marker:
     def __init__(self, touch, markerData):
         #   Class variables based on touch profile:
         self.currentPos = touch.pos
-        self.fidicualID = touch.fid
+        self.fiducialID = touch.fid
 
         #   Custom class variables:
         self.artifactID = None
@@ -36,8 +36,8 @@ class Marker:
         self.markerLabel = None
         self.markerType = None
 
-        if format(id) in markerData:
-            mD = markerData[format(id)]
+        if format(self.fiducialID) in markerData:
+            mD = markerData[format(self.fiducialID)]
             self.audio = mD["audio"]
             self.markerLabel = mD["label"]
             self.markerType = mD["type"]
@@ -49,5 +49,5 @@ class Marker:
 
     def __str__(self):
         return "[{}, {}, {}]\t\t{}\t{}\t{}\t\t{}".format(
-            self.fidicualID, self.indicatorID, self.artifactID, self.currentPos, self.markerType.value, self.audio, self.markerLabel
+            self.fiducialID, self.indicatorID, self.artifactID, self.currentPos, self.markerType.value, self.audio, self.markerLabel
         )
