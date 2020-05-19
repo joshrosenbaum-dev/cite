@@ -39,6 +39,8 @@ class CITEPreloader(Widget):
         print("==========================================================================================")
         print("[CITE   ] Loading CITE...")
 
+        self.graph = graphCanvas
+
         audioLoc = "audio/"
         dataLoc = "data/"
         jsonLoc = "json/"
@@ -183,9 +185,7 @@ class CITEPreloader(Widget):
             cache = open(jsonCacheLoc, "a")
             cache.write("audio_written")
             cache.close()
-            
-        self.graph = []
-
+       
         self.markersOnTable = []
 
         print("==========================================================================================")
