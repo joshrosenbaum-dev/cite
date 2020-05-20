@@ -88,7 +88,7 @@ class CITEPreloader(Widget):
         self.jsonData["indicators"] = JsonStore(jsonFiles[2])
 
         self.indicatorData = {}
-        indicators = self.jsonData["indicators"]
+        indicators = self.jsonData["indicators"] 
 
         #   Create a key, value pair where the key is the ID
         #   of the indicator, and the value is a dataframe
