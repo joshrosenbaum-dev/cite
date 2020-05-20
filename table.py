@@ -1,25 +1,43 @@
 #   table.py
 #   -------------------------------------------------------
 #   Handles all events relating to the tabletop surface.
-#
-#   Note about playsound function:
-#       playsound(<audio file>, <flag>)
-#   Setting the <flag> to False allows the audio to play
-#   asynchonously.
 
 from kivy.uix.widget import Widget
 from playsound import playsound
+from time import sleep
 import marker as m
 import graphing as g
+import threading
+import queue
 
 class TableHandler(Widget):
     def generateTable(self, package):
-        self.markerData = package.markerData
-        self.markersOnTable = package.markersOnTable
         self.graph = package.graph
         self.indicatorData = package.indicatorData
+        self.markerData = package.markerData
+        self.markersOnTable = package.markersOnTable
         self.popSize = package.df_popSizeByArtifact
         self.generateGraph()
+        self.audioQueue = queue.Queue()
+
+    def audioThread(self):
+        while True:
+            sound = self.audioQueue.get()
+            if sound is None:
+                break
+            playsound(sound)
+
+
+    def playSound(self, audioQueue, audioList):
+        t = threading.Thread(target=self.audioThread)
+        t.start()
+        for index in range(0, len(audioList)):
+            audioQueue.put(audioList[index])
+            if index == len(audioList) - 1:
+                audioQueue.put(None)
+                t.join()
+            else:
+                sleep(1)
         
     #   There are three functions to process touch events.
     #   The on_touch_down function is when a marker is placed.
@@ -29,11 +47,12 @@ class TableHandler(Widget):
     def on_touch_down(self, touch):
         if "markerid" in touch.profile:
             marker = m.Marker(touch, self.markerData)
-            playsound("audio/-add.mp3")
+            audioList = ["audio/-add.mp3"]
             if format(touch.fid) not in self.markerData:
-                playsound("audio/-unk.mp3")
+                audioList.append("audio/-unk.mp3")
             else:
-                playsound(marker.audio)
+                audioList.append(marker.audio)
+            self.playSound(self.audioQueue, audioList)
             self.markersOnTable.append(marker)
             self.generateGraph()
     
