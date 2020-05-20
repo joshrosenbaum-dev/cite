@@ -31,6 +31,7 @@ class Marker:
         #   Custom class variables:
         self.artifactID = None
         self.artifactAbbr = None
+        self.artifactColor = None
         self.audio = None
         self.indicatorID = None
         self.markerLabel = None
@@ -44,6 +45,7 @@ class Marker:
             if self.markerType == MarkerType.ARTIFACT:
                 self.artifactID = mD["artifact_id"]
                 self.artifactAbbr = mD["artifact_abbr"]
+                self.artifactColor = mD["artifact_color"]
             if self.markerType == MarkerType.INDICATOR:
                 self.indicatorID = mD["indicator_id"]
 

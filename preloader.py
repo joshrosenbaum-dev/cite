@@ -178,7 +178,8 @@ class CITEPreloader(Widget):
                     "label": artifact.get("label"),
                     "type": m.MarkerType.ARTIFACT,
                     "artifact_id": artifactID,
-                    "artifact_abbr": artifact.get("abbr")
+                    "artifact_abbr": artifact.get("abbr"),
+                    "artifact_color": artifact.get("color")
                 }
 
         if self.loadAttributes:  
