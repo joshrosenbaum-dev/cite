@@ -7,7 +7,6 @@
 
 from kivy.uix.widget import Widget
 from playsound import playsound
-from time import sleep
 import marker as m
 import graphing as g
 import queue
@@ -16,58 +15,54 @@ import threading
 class TableHandler(Widget):
     def generateTable(self, package):
         self.graph = package.graph
+        self.loaded = 0
         self.indicatorData = package.indicatorData
         self.markerData = package.markerData
         self.markersOnTable = package.markersOnTable
         self.popSize = package.df_popSizeByArtifact
         self.generateGraph()
-        self.audioQueue = queue.Queue()
+        self.narrationPlaylist = []
 
-    def audioThread(self):
-        while True:
-            sound = self.audioQueue.get()
-            if sound is None:
-                break
-            playsound(sound)
+    def startNarrationDaemon(self):
+        narrationProcess = threading.Thread(target = self.narrationDaemon, args = (self.narrationPlaylist, ))
+        narrationProcess.daemon = True
+        narrationProcess.start()
 
-    def playAudio(self, audioQueue, audioList):
-        t = threading.Thread(target=self.audioThread)
-        t.start()
-        for index in range(0, len(audioList)):
-            audioQueue.put(audioList[index])
-            if index == len(audioList) - 1:
-                audioQueue.put(None)
-                t.join()
-            else:
-                sleep(1)
-        
+    def narrationDaemon(self, narrationPlaylist):
+        for index in range(0, len(narrationPlaylist)):
+            playsound(narrationPlaylist[index])
+
     #   There are three functions to process touch events.
     #   The on_touch_down function is when a marker is placed.
     #   The on_touch_up function is when a marker is removed.
     #   The on_touch_move function is when a marker is moved.
 
     def on_touch_down(self, touch):
-        if "markerid" in touch.profile:
-            marker = m.Marker(touch, self.markerData)
-            audioList = ["audio/-add.mp3"]
-            if format(touch.fid) not in self.markerData:
-                audioList.append("audio/-unk.mp3")
-            else:
-                audioList.append(marker.audio)
-            self.playAudio(self.audioQueue, audioList)
-            self.markersOnTable.append(marker)
-            self.generateGraph()
+        print(self.loaded)
+        if self.loaded:
+            if "markerid" in touch.profile:
+                marker = m.Marker(touch, self.markerData)
+                self.narrationPlaylist.clear()
+                self.narrationPlaylist.append("audio/-add.mp3")
+                if format(touch.fid) not in self.markerData:
+                    self.narrationPlaylist.append("audio/-unk.mp3")
+                else:
+                    self.narrationPlaylist.append(marker.audio)
+                self.startNarrationDaemon()
+                self.markersOnTable.append(marker)
+                self.generateGraph()
     
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fiducialID == touch.fid:
-                    audioList = ["audio/-rem.mp3"]
+                    self.narrationPlaylist.clear()
+                    self.narrationPlaylist.append("audio/-rem.mp3")
                     if format(touch.fid) not in self.markerData:
-                        audioList.append("audio/-unk.mp3")
+                        self.narrationPlaylist.append("audio/-unk.mp3")
                     else:
-                        audioList.append(marker.audio)
-                    self.playAudio(self.audioQueue, audioList)
+                        self.narrationPlaylist.append(marker.audio)
+                    self.startNarrationDaemon()
                     self.markersOnTable.remove(marker)
                     self.generateGraph()
 
