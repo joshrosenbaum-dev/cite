@@ -10,8 +10,8 @@ from playsound import playsound
 from time import sleep
 import marker as m
 import graphing as g
-import threading
 import queue
+import threading
 
 class TableHandler(Widget):
     def generateTable(self, package):
@@ -62,11 +62,12 @@ class TableHandler(Widget):
         if "markerid" in touch.profile:
             for marker in self.markersOnTable:
                 if marker.fiducialID == touch.fid:
-                    playsound("audio/-rem.mp3")
+                    audioList = ["audio/-rem.mp3"]
                     if format(touch.fid) not in self.markerData:
-                        playsound("audio/-unk.mp3")
+                        audioList.append("audio/-unk.mp3")
                     else:
-                        playsound(marker.audio)
+                        audioList.append(marker.audio)
+                    self.playAudio(self.audioQueue, audioList)
                     self.markersOnTable.remove(marker)
                     self.generateGraph()
 
@@ -75,7 +76,7 @@ class TableHandler(Widget):
             for marker in self.markersOnTable:
                 if marker.fiducialID == touch.fid:   
                     marker.currentPos = touch.pos
-                    self.generateGraph()
+                    # self.generateGraph()
 
     def getProximalMarker(self, markerSize, padding, bucketIndex, listMOT):
         currentDiff = markerSize + padding
