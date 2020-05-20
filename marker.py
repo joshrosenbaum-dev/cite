@@ -31,7 +31,7 @@ class Marker:
         #   Custom class variables:
         self.artifactID = None
         self.artifactAbbr = None
-        self.artifactColor = None 
+        self.artifactColor = None
         self.audio = None
         self.indicatorID = None
         self.markerLabel = None
