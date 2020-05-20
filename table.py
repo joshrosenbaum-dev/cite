@@ -1,6 +1,9 @@
 #   table.py
 #   -------------------------------------------------------
 #   Handles all events relating to the tabletop surface.
+#
+#   Audio threading:
+#   https://stackoverflow.com/questions/61200617/how-to-play-different-sound-consecutively-and-asynchronously-in-python
 
 from kivy.uix.widget import Widget
 from playsound import playsound
@@ -27,8 +30,7 @@ class TableHandler(Widget):
                 break
             playsound(sound)
 
-
-    def playSound(self, audioQueue, audioList):
+    def playAudio(self, audioQueue, audioList):
         t = threading.Thread(target=self.audioThread)
         t.start()
         for index in range(0, len(audioList)):
@@ -52,7 +54,7 @@ class TableHandler(Widget):
                 audioList.append("audio/-unk.mp3")
             else:
                 audioList.append(marker.audio)
-            self.playSound(self.audioQueue, audioList)
+            self.playAudio(self.audioQueue, audioList)
             self.markersOnTable.append(marker)
             self.generateGraph()
     
@@ -67,7 +69,6 @@ class TableHandler(Widget):
                         playsound(marker.audio)
                     self.markersOnTable.remove(marker)
                     self.generateGraph()
-
 
     def on_touch_move(self, touch):
         if "markerid" in touch.profile:
