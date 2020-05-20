@@ -1,9 +1,6 @@
 #   table.py
 #   -------------------------------------------------------
 #   Handles all events relating to the tabletop surface.
-#
-#   Audio threading:
-#   https://stackoverflow.com/questions/61200617/how-to-play-different-sound-consecutively-and-asynchronously-in-python
 
 from kivy.uix.widget import Widget
 from playsound import playsound
@@ -74,6 +71,22 @@ class TableHandler(Widget):
                     # self.generateGraph()
 
     def getProximalMarker(self, markerSize, padding, bucketIndex, listMOT):
+        #   Given that the position is in the center of a
+        #   marker, the current maximum difference is equal
+        #   to the marker's size (square) and it's padding.
+
+        #   Then, we take the differences in X and Y (dbX/dbY)
+        #   in absolute value (we only care about the degree of
+        #   difference) and create a difference "score" for
+        #   each indicator on the table out of the sum of the
+        #   two values.
+
+        #   If the difference score is less than the current
+        #   maximum difference, we bring down the current
+        #   difference to match the smaller value, and set the
+        #   indicator marker as closest. We repeat for all
+        #   of the existing indicator markers.
+        
         currentDiff = markerSize + padding
         currentMarker = None
         for index in range(len(listMOT)):
