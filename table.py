@@ -67,7 +67,7 @@ class TableHandler(Widget):
             dbY = abs(bucket.currentPos[1] - marker.currentPos[1])
             diffBetween = dbX + dbY
             if diffBetween <= currentDiff:
-                currentDiff = diffBetween[2]
+                currentDiff = diffBetween
                 currentMarker = marker
         return currentMarker
 

@@ -9,7 +9,7 @@ def getPoint(xFrame, yFrame, popFrame, artifact, year):
     x = xFrame[year].loc[artifact.markerLabel]
     y = yFrame[year].loc[artifact.markerLabel]
     popSize = popFrame[year].loc[artifact.markerLabel]
-    point = [x, y, popSize, artifact.artifactAbbr]
+    point = [x, y, popSize, artifact]
     return point
 
 def plotPoints(points, label_x, label_y):      
@@ -22,14 +22,20 @@ def plotPoints(points, label_x, label_y):
 
     plt.xlabel(label_x)
     plt.ylabel(label_y)
-    xc = []
-    yc = []
-    sl = []
+    xCoords = []
+    yCoords = []
+    sizeList = []
+    colors = []
 
     for p in points:
-        xc.append(p[0])    
-        yc.append(p[1])
-        sl.append(p[2] / 100000)
-        plt.annotate(p[3].upper(), (p[0], p[1]))
+        x = p[0]
+        y = p[1]
+        popSize = p[2]
+        artifact = p[3]
+        xCoords.append(x)    
+        yCoords.append(y)
+        sizeList.append(popSize / 100000)
+        colors.append(artifact.artifactColor)
+        plt.annotate(artifact.artifactAbbr.upper(), (x, y))
 
-    plt.scatter(xc, yc, sl)
+    plt.scatter(xCoords, yCoords, sizeList, colors)
