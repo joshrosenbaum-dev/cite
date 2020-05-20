@@ -2,6 +2,10 @@
 #   -------------------------------------------------------
 #   Point and point-plotting functions.
 
+#   TODO: Remove labels and create graph key instead.
+#   Currently, the labels are made illegible by darker
+#   colors.
+
 import matplotlib.pyplot as plt
 
 def getPoint(xFrame, yFrame, popFrame, artifact, year):
