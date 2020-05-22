@@ -1,0 +1,8 @@
+{
+    "0": {"label": "United States", "abbr": "us", "color": "#002c73"},
+    "1": {"label": "Brazil", "abbr": "br", "color": "#000000"},
+    "2": {"label": "Greece", "abbr": "gr", "color": "#BF8000"},
+    "3": {"label": "Australia", "abbr": "au", "color": "#73190B"},
+    "4": {"label": "Singapore", "abbr": "sg", "color": "#58730B"},
+    "5": {"label": "Kenya", "abbr": "ke", "color": "#90BF0A"}
+}
