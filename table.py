@@ -12,13 +12,13 @@ import threading
 class TableHandler(Widget):
     def generateTable(self, package):
         self.graph = package.graph
-        self.loaded = 0
         self.indicatorData = package.indicatorData
         self.markerData = package.markerData
         self.markersOnTable = package.markersOnTable
         self.popSize = package.df_popSizeByArtifact
-        self.generateGraph()
+        self.loaded = 0
         self.narrationPlaylist = []
+        self.generateGraph()
 
     def startNarrationDaemon(self):
         narrationProcess = threading.Thread(target = self.narrationDaemon, args = (self.narrationPlaylist, ))
