@@ -16,7 +16,6 @@ class TableHandler(Widget):
         self.markerData = package.markerData
         self.markersOnTable = package.markersOnTable
         self.popSize = package.df_popSizeByArtifact
-        self.loaded = 0
         self.narrationPlaylist = []
         self.generateGraph()
 
@@ -35,19 +34,17 @@ class TableHandler(Widget):
     #   The on_touch_move function is when a marker is moved.
 
     def on_touch_down(self, touch):
-        print(self.loaded)
-        if self.loaded:
-            if "markerid" in touch.profile:
-                marker = m.Marker(touch, self.markerData)
-                self.narrationPlaylist.clear()
-                self.narrationPlaylist.append("audio/-add.mp3")
-                if format(touch.fid) not in self.markerData:
-                    self.narrationPlaylist.append("audio/-unk.mp3")
-                else:
-                    self.narrationPlaylist.append(marker.audio)
-                self.startNarrationDaemon()
-                self.markersOnTable.append(marker)
-                self.generateGraph()
+        if "markerid" in touch.profile:
+            marker = m.Marker(touch, self.markerData)
+            self.narrationPlaylist.clear()
+            self.narrationPlaylist.append("audio/-add.mp3")
+            if format(touch.fid) not in self.markerData:
+                self.narrationPlaylist.append("audio/-unk.mp3")
+            else:
+                self.narrationPlaylist.append(marker.audio)
+            self.startNarrationDaemon()
+            self.markersOnTable.append(marker)
+            self.generateGraph()
     
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
