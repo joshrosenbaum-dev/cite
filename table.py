@@ -153,25 +153,34 @@ class TableHandler(Widget):
                 if x != None and y != None:
                     xFrame = self.indicatorData[x.indicatorID]
                     yFrame = self.indicatorData[y.indicatorID]
-                    
+                    year = "2002"
+
                     if len(artifactsMOT) >= 1:
                         for index in artifactsMOT:
                             artifact = self.markersOnTable[index]
-                            points.append(g.getPoint(xFrame, yFrame, self.popSize, artifact, "2002"))
-                            g.plotPoints(points, x.markerLabel, y.markerLabel)
+                            points.append(g.getPoint(xFrame, yFrame, self.popSize, artifact, year))
+                            g.plotPoints(points, x.markerLabel, y.markerLabel, None, None)
                             self.graph.draw()
                     else:
-                        g.plotPoints([], x.markerLabel, y.markerLabel)
+                        #   Here, we use pandas min/max functions
+                        #   to determine our graph's min/max without
+                        #   artifacts.
+                        #
+                        #   https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.min.html
+                        
+                        xRange = [xFrame[year].min(), xFrame[year].max()]
+                        yRange = [yFrame[year].min(), yFrame[year].max()]
+                        g.plotPoints([], x.markerLabel, y.markerLabel, xRange, yRange)
                         self.graph.draw()
                 else:
                     #   Not enough indicators in range.
-                    g.plotPoints([], None, None)
+                    g.plotPoints([], None, None, None, None)
                     self.graph.draw()
             else:
                 #   Not enough indicators on table.
-                g.plotPoints([], None, None)
+                g.plotPoints([], None, None, None, None)
                 self.graph.draw()
         else:
             #   Not enough markers on the table.
-            g.plotPoints([], None, None)
+            g.plotPoints([], None, None, None, None)
             self.graph.draw()

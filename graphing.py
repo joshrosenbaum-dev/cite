@@ -16,18 +16,24 @@ def getPoint(xFrame, yFrame, popFrame, artifact, year):
     point = [x, y, popSize, artifact]
     return point
 
-def plotPoints(points, label_x, label_y):      
+def plotPoints(points, xLabel, yLabel, xRange, yRange):      
     plt.clf()
     
-    if label_x == None or label_y == None:
+    if xLabel == None or yLabel == None:
         plt.suptitle("Please place markers on the table to display a graph!")
         plt.xlim(xmin = 0.0)
         plt.ylim(ymin = 0.0)
     else:
-        plt.suptitle(label_x + " vs. " + label_y)
+        plt.suptitle(xLabel + " vs. " + yLabel)
+    
+    if xRange != None:
+        plt.xlim(xRange)
 
-    plt.xlabel(label_x)
-    plt.ylabel(label_y)
+    if yRange != None:
+        plt.ylim(yRange)
+
+    plt.xlabel(xLabel)
+    plt.ylabel(yLabel)
     xCoords = []
     yCoords = []
     sizeList = []
