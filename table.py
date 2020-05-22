@@ -151,12 +151,16 @@ class TableHandler(Widget):
                     y = self.getProximalMarker(markerSize, padding, yIndex, indicatorsMOT)
 
                 if x != None and y != None:
-                    for index in artifactsMOT:
-                        xFrame = self.indicatorData[x.indicatorID]
-                        yFrame = self.indicatorData[y.indicatorID]
-                        artifact = self.markersOnTable[index]
-                        points.append(g.getPoint(xFrame, yFrame, self.popSize, artifact, "2002"))
-                        g.plotPoints(points, x.markerLabel, y.markerLabel)
+                    if len(artifactsMOT) >= 1:
+                        for index in artifactsMOT:
+                            xFrame = self.indicatorData[x.indicatorID]
+                            yFrame = self.indicatorData[y.indicatorID]
+                            artifact = self.markersOnTable[index]
+                            points.append(g.getPoint(xFrame, yFrame, self.popSize, artifact, "2002"))
+                            g.plotPoints(points, x.markerLabel, y.markerLabel)
+                            self.graph.draw()
+                    else:
+                        g.plotPoints([], x.markerLabel, y.markerLabel)
                         self.graph.draw()
                 else:
                     #   Not enough indicators in range.
