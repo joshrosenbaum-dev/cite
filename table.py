@@ -175,12 +175,12 @@ class TableHandler(Widget):
                 else:
                     #   Not enough indicators in range.
                     g.plotPoints([], None, None, None, None)
-                    self.graph.canvas.clear()
+                    self.graph.draw()
             else:
                 #   Not enough indicators on table.
                 g.plotPoints([], None, None, None, None)
-                self.graph.canvas.clear()
+                self.graph.draw()
         else:
             #   Not enough markers on the table.
             g.plotPoints([], None, None, None, None)
-            self.graph.canvas.clear()
+            self.graph.draw()
