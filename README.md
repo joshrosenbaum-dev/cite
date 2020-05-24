@@ -1,7 +1,7 @@
 # CITE: Collaborative Interactive Tabletop for Education
 CITE, based on [DataBlocks Visualizations](https://www.datablocks.org), allows users to use the tangible user interface object (TUIO) framework to visualize data based on [Gapminder](https://www.gapminder.org). We will be using the [ReacTIVision software](http://reactivision.sourceforge.net) to serve as the TUIO client and [Kivy](https://www.kivy.org), a Python based natural user interface library.
 
-CITE uses [Matplotlib](https://www.matplotlib.org) to display our information as a bubble graph, similar to Gapminder's data. By using CITE, students and researches can use plotted points to analyze the data set and discover new global perspectives.
+CITE uses [Matplotlib](https://www.matplotlib.org) to display our information as a bubble graph, similar to Gapminder's data. By using CITE, students and researchers can use plotted points to analyze the data set and discover new global perspectives.
 
 ## Prerequisities/Installation for Source Code
 You will need the following to set up a proper working environment:
