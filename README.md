@@ -5,7 +5,7 @@ CITE uses [Matplotlib](https://www.matplotlib.org) to display our information as
 
 ## Known Issues/TODO
 * If there are markers are on the table before launch, the program will narrate for each marker already on the table all at once.
-* Generating a graph based on moving a marker is currently disabled as it makes the program unresponsive; this is due to redrawing the graph canvas repeatedly.
+* Generating a graph based on moving a marker is currently disabled as it makes the program unresponsive; this is due to redrawing the graph canvas repeatedly - being worked on as we speak.
 * A function for connecting to Arduino devices on the table exists and is linked, but is currently not implemented.
 
 ## Prerequisities/Installation for Source Code
