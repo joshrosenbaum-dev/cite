@@ -3,12 +3,17 @@ CITE, based on [DataBlocks Visualizations](https://www.datablocks.org), allows u
 
 CITE uses [Matplotlib](https://www.matplotlib.org) to display our information as a bubble graph, similar to Gapminder's data. By using CITE, students and researchers can use plotted points to analyze the data set and discover new global perspectives.
 
+## Known Issues/TODO
+* If there are markers are on the table before launch, the program will narrate for each marker already on the table all at once.
+* Generating a graph based on moving a marker is currently disabled as it makes the program unresponsive; this is due to redrawing the graph canvas repeatedly.
+* A function for connecting to Arduino devices on the table exists and is linked, but is currently not implemented.
+
 ## Prerequisities/Installation for Source Code
 You will need the following to set up a proper working environment:
 * [Reactivision](http://reactivision.sourceforge.net) software
 * Python 3.7 with Virtualenv, [Anaconda](https://www.anaconda.com/distribution), or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) (we will be using Anaconda/Miniconda in this documentation)
 * [Kivy](https://www.kivy.org)
-* [oscpy](https://pypi.org/project/oscpy), [pandas](https://pandas.pydata.org), [matplotlib](https://matplotlib.org), [playsound](https://pypi.org/project/playsound), [gTTS (Google Text-to-Speech)](https://pypi.org/project/gTTS)
+* [oscpy](https://pypi.org/project/oscpy), [pandas](https://pandas.pydata.org), [matplotlib](https://matplotlib.org), [playsound](https://pypi.org/project/playsound), [gTTS (Google Text-to-Speech)](https://pypi.org/project/gTTS), [pyserial](https://pypi.org/project/pyserial/)
 
 ### Configuring Source Environment (using Anaconda/Miniconda)
 You may need to update `conda` before starting:
@@ -29,7 +34,7 @@ conda install kivy -c conda-forge
 ```
 Install the remaining above dependencies using `pip`:
 ```
-pip install oscpy pandas matplotlib playsound gTTS
+pip install oscpy pandas matplotlib playsound gTTS pyserial
 ```
 ### Installing Kivy Garden for Graph Functionality
 Install `kivy-garden` using `pip`:
