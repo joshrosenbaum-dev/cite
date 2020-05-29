@@ -4,6 +4,7 @@
 
 from kivy.uix.widget import Widget
 from playsound import playsound
+import arduino as a
 import marker as m
 import graphing as g
 import queue
@@ -44,6 +45,7 @@ class TableHandler(Widget):
                 self.narrationPlaylist.append(marker.audio)
             self.startNarrationDaemon()
             self.markersOnTable.append(marker)
+            #   a.lightUp(1)
             self.generateGraph()
     
     def on_touch_up(self, touch):
@@ -58,6 +60,7 @@ class TableHandler(Widget):
                         self.narrationPlaylist.append(marker.audio)
                     self.startNarrationDaemon()
                     self.markersOnTable.remove(marker)
+                    #   a.lightUp(0)
                     self.generateGraph()
 
     def on_touch_move(self, touch):
