@@ -14,6 +14,7 @@
 #   https://kivy.org/doc/stable/api-kivy.input.motionevent.html
 
 from enum import Enum
+from math import degrees
 
 class MarkerType(Enum):
     X = "X Bucket"
@@ -26,6 +27,7 @@ class Marker:
     def __init__(self, touch, markerData):
         #   Class variables based on touch profile:
         self.currentPos = touch.pos
+        self.currentAngle = degrees(touch.a)
         self.fiducialID = touch.fid
 
         #   Custom class variables:

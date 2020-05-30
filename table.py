@@ -3,6 +3,7 @@
 #   Handles all events relating to the tabletop surface.
 
 from kivy.uix.widget import Widget
+from math import degrees
 from playsound import playsound
 import arduino as a
 import marker as m
@@ -68,6 +69,8 @@ class TableHandler(Widget):
             for marker in self.markersOnTable:
                 if marker.fiducialID == touch.fid:   
                     marker.currentPos = touch.pos
+                    marker.currentAngle = degrees(touch.a)
+                    print(marker.currentAngle)
                     # self.generateGraph()
 
     def getProximalMarker(self, markerSize, padding, bucketIndex, listMOT):
