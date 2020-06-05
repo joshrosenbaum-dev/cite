@@ -196,10 +196,5 @@ class TableHandler(Widget):
                 graph.draw()
         else:
             #   Not enough markers on the table.
-<<<<<<< HEAD
             g.plotPoints([], None, None, None, None, None)
-            graph.draw()
-=======
-            g.plotPoints([], None, None, None, None)
             self.graph.draw()
->>>>>>> 711b30b869a99016e7f5891cc18c56b39bd5b18a
