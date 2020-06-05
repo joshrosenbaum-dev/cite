@@ -9,14 +9,13 @@
 import matplotlib.pyplot as plt
 
 def getPoint(xFrame, yFrame, popFrame, artifact, year):
-    year = "2002"
     x = xFrame[year].loc[artifact.markerLabel]
     y = yFrame[year].loc[artifact.markerLabel]
     popSize = popFrame[year].loc[artifact.markerLabel]
     point = [x, y, popSize, artifact]
     return point
 
-def plotPoints(points, xLabel, yLabel, xRange, yRange):      
+def plotPoints(points, xLabel, yLabel, xRange, yRange, year):      
     plt.clf()
     
     if xLabel == None or yLabel == None:
@@ -24,7 +23,7 @@ def plotPoints(points, xLabel, yLabel, xRange, yRange):
         plt.xlim(xmin = 0.0)
         plt.ylim(ymin = 0.0)
     else:
-        plt.suptitle(xLabel + " vs. " + yLabel)
+        plt.suptitle(xLabel + " vs. " + yLabel + " (" + year + ")")
     
     if xRange != None:
         plt.xlim(xRange)
