@@ -6,12 +6,6 @@
 #   Fidicual markers in reacTIVision have a position that
 #   can be sent to the Kivy application and recognized
 #   as touch objects.
-#
-#   Relies on TUIO server connection via the oscpy library.
-#
-#   https://kivy.org/doc/stable/api-kivy.input.providers.tuio.html
-#   https://kivy.org/doc/stable/guide/inputs.html
-#   https://kivy.org/doc/stable/api-kivy.input.motionevent.html
 
 from enum import Enum
 from math import degrees
