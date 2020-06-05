@@ -141,7 +141,7 @@ class TableHandler(Widget):
         #   of the markers based on the camera size.
 
         markerSize = 110
-        padding = markerSize / 10
+        padding = markerSize / 5
         x = None
         y = None
 
@@ -185,16 +185,20 @@ class TableHandler(Widget):
                         xRange = [xFrame[year].min(), xFrame[year].max()]
                         yRange = [yFrame[year].min(), yFrame[year].max()]
                         g.plotPoints([], x.markerLabel, y.markerLabel, xRange, yRange, year)
+                        print("Drawing graph success")
                         graph.draw()
                 else:
                     #   Not enough indicators in range.
                     g.plotPoints([], None, None, None, None, None)
+                    print("Not enough indicators in range")
                     graph.draw()
             else:
                 #   Not enough indicators on table.
                 g.plotPoints([], None, None, None, None, None)
+                print("Not enough indicators on table")
                 graph.draw()
         else:
             #   Not enough markers on the table.
             g.plotPoints([], None, None, None, None, None)
+            print("Not enough markers on table")
             graph.draw()
