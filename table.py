@@ -2,6 +2,7 @@
 #   -------------------------------------------------------
 #   Handles all events relating to the tabletop surface.
 
+from kivy.clock import mainthread
 from kivy.uix.widget import Widget
 from math import degrees
 from playsound import playsound
@@ -19,9 +20,10 @@ class TableHandler(Widget):
         self.markersOnTable = package.markersOnTable
         self.popSize = package.df_popSizeByArtifact
         self.narrationPlaylist = []
-        self.generateGraph()
+        self.generateGraph(self.graph)
 
     def startNarrationDaemon(self):
+        #   https://pymotw.com/2/threading/index.html
         narrationProcess = threading.Thread(target = self.narrationDaemon, args = (self.narrationPlaylist, ))
         narrationProcess.daemon = True
         narrationProcess.start()
@@ -30,10 +32,16 @@ class TableHandler(Widget):
         for index in range(0, len(narrationPlaylist)):
             playsound(narrationPlaylist[index])
 
+    def startGraphingDaemon(self):
+        graphingProcess = threading.Thread(target = self.generateGraph, args = (self.graph, ))
+        graphingProcess.daemon = True
+        graphingProcess.start()
+
     #   There are three functions to process touch events.
     #   The on_touch_down function is when a marker is placed.
     #   The on_touch_up function is when a marker is removed.
     #   The on_touch_move function is when a marker is moved.
+    #   https://kivy.org/doc/stable/api-kivy.input.motionevent.html
 
     def on_touch_down(self, touch):
         if "markerid" in touch.profile:
@@ -47,7 +55,7 @@ class TableHandler(Widget):
             self.startNarrationDaemon()
             self.markersOnTable.append(marker)
             #   a.lightUp(1)
-            self.generateGraph()
+            self.startGraphingDaemon()
     
     def on_touch_up(self, touch):
         if "markerid" in touch.profile:
@@ -62,7 +70,7 @@ class TableHandler(Widget):
                     self.startNarrationDaemon()
                     self.markersOnTable.remove(marker)
                     #   a.lightUp(0)
-                    self.generateGraph()
+                    self.startGraphingDaemon()
 
     def on_touch_move(self, touch):
         if "markerid" in touch.profile:
@@ -70,8 +78,7 @@ class TableHandler(Widget):
                 if marker.fiducialID == touch.fid:   
                     marker.currentPos = touch.pos
                     marker.currentAngle = degrees(touch.a)
-                    print(marker.currentAngle)
-                    # self.generateGraph()
+                    self.startGraphingDaemon()
 
     def getProximalMarker(self, markerSize, padding, bucketIndex, listMOT):
         #   Given that the position is in the center of a
@@ -103,7 +110,8 @@ class TableHandler(Widget):
                 currentMarker = marker
         return currentMarker
 
-    def generateGraph(self):     
+    @mainthread
+    def generateGraph(self, graph):     
         #   The lists indicatorsMOT and artifactsMOT consist
         #   of the indices of indicator markers and artifact
         #   markers on the markersOnTable list, along with the
@@ -165,8 +173,8 @@ class TableHandler(Widget):
                         for index in artifactsMOT:
                             artifact = self.markersOnTable[index]
                             points.append(g.getPoint(xFrame, yFrame, self.popSize, artifact, year))
-                            g.plotPoints(points, x.markerLabel, y.markerLabel, None, None)
-                            self.graph.draw()
+                            g.plotPoints(points, x.markerLabel, y.markerLabel, None, None, year)
+                            graph.draw()
                     else:
                         #   Here, we use pandas min/max functions
                         #   to determine our graph's min/max without
@@ -176,17 +184,22 @@ class TableHandler(Widget):
                         
                         xRange = [xFrame[year].min(), xFrame[year].max()]
                         yRange = [yFrame[year].min(), yFrame[year].max()]
-                        g.plotPoints([], x.markerLabel, y.markerLabel, xRange, yRange)
-                        self.graph.draw()
+                        g.plotPoints([], x.markerLabel, y.markerLabel, xRange, yRange, year)
+                        graph.draw()
                 else:
                     #   Not enough indicators in range.
-                    g.plotPoints([], None, None, None, None)
-                    self.graph.draw()
+                    g.plotPoints([], None, None, None, None, None)
+                    graph.draw()
             else:
                 #   Not enough indicators on table.
-                g.plotPoints([], None, None, None, None)
-                self.graph.draw()
+                g.plotPoints([], None, None, None, None, None)
+                graph.draw()
         else:
             #   Not enough markers on the table.
+<<<<<<< HEAD
+            g.plotPoints([], None, None, None, None, None)
+            graph.draw()
+=======
             g.plotPoints([], None, None, None, None)
             self.graph.draw()
+>>>>>>> 711b30b869a99016e7f5891cc18c56b39bd5b18a
