@@ -45,6 +45,6 @@ def plotPoints(points, xLabel, yLabel, xRange, yRange, year):
         yCoords.append(y)
         sizeList.append(popSize / 100000)
         colors.append(artifact.artifactColor)
-        plt.annotate(artifact.artifactAbbr.upper(), xy = (x - x/2, y - y/2), backgroundcolor = (1, 1, 1, 0.3))
+        plt.annotate(artifact.markerLabel + " (" + artifact.artifactAbbr.upper() + ")", xy = (x, y), backgroundcolor = "#FFFFFF30")
 
     plt.scatter(xCoords, yCoords, sizeList, colors)
