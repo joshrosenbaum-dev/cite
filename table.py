@@ -96,14 +96,12 @@ class TableHandler(Widget):
 
         currentDiff = sqrt(2 * pow(markerSize + padding, 2))
         currentMarker = None
-        print(currentDiff)
         for index in range(len(listMOT)):
             marker = self.markersOnTable[listMOT[index]]
             bucket = self.markersOnTable[bucketIndex]
             dbX = marker.currentPos[0] - bucket.currentPos[0]
             dbY = marker.currentPos[1] - bucket.currentPos[1]
             diffBetween = sqrt(pow(dbX, 2) + pow(dbY, 2))
-            print(bucket.fiducialID, marker.fiducialID, diffBetween)
             if diffBetween <= currentDiff:
                 currentDiff = diffBetween
                 currentMarker = marker
@@ -184,20 +182,16 @@ class TableHandler(Widget):
                         xRange = [xFrame[year].min(), xFrame[year].max()]
                         yRange = [yFrame[year].min(), yFrame[year].max()]
                         g.plotPoints([], x.markerLabel, y.markerLabel, xRange, yRange, year)
-                        print("Drawing graph success")
                         graph.draw()
                 else:
                     #   Not enough indicators in range.
                     g.plotPoints([], None, None, None, None, None)
-                    print("Not enough indicators in range")
                     graph.draw()
             else:
                 #   Not enough indicators on table.
                 g.plotPoints([], None, None, None, None, None)
-                print("Not enough indicators on table")
                 graph.draw()
         else:
             #   Not enough markers on the table.
             g.plotPoints([], None, None, None, None, None)
-            print("Not enough markers on table")
             graph.draw()
