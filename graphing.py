@@ -2,9 +2,7 @@
 #   -------------------------------------------------------
 #   Point and point-plotting functions.
 
-#   TODO: Remove labels and create graph key instead.
-#   Currently, the labels are made illegible by darker
-#   colors.
+#   https://matplotlib.org/3.2.1/tutorials/text/annotations.html
 
 import matplotlib.pyplot as plt
 
@@ -47,6 +45,6 @@ def plotPoints(points, xLabel, yLabel, xRange, yRange, year):
         yCoords.append(y)
         sizeList.append(popSize / 100000)
         colors.append(artifact.artifactColor)
-        plt.annotate(artifact.artifactAbbr.upper(), (x, y))
+        plt.annotate(artifact.artifactAbbr.upper(), xy = (x - x/2, y - y/2), backgroundcolor = (1, 1, 1, 0.3))
 
     plt.scatter(xCoords, yCoords, sizeList, colors)

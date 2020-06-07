@@ -4,7 +4,7 @@
 
 from kivy.clock import mainthread
 from kivy.uix.widget import Widget
-from math import degrees
+from math import degrees, sqrt, pow
 from playsound import playsound
 import arduino as a
 import marker as m
@@ -81,30 +81,29 @@ class TableHandler(Widget):
                     self.startGraphingDaemon()
 
     def getProximalMarker(self, markerSize, padding, bucketIndex, listMOT):
-        #   Given that the position is in the center of a
-        #   marker, the current maximum difference is equal
-        #   to the marker's size (square) and it's padding.
-
-        #   Then, we take the differences in X and Y (dbX/dbY)
-        #   in absolute value (we only care about the degree of
-        #   difference) and create a difference "score" for
-        #   each indicator on the table out of the sum of the
-        #   two values.
-
+        #   Here, we use point geometry to figure out the 
+        #   differences between two points (bucket and marker).
+        #
+        #   We create a difference "score" for each indicator
+        #   on the table and compare that to the difference
+        #   threshold (the current maxiumum difference).
+        #
         #   If the difference score is less than the current
         #   maximum difference, we bring down the current
         #   difference to match the smaller value, and set the
         #   indicator marker as closest. We repeat for all
         #   of the existing indicator markers.
-        
-        currentDiff = markerSize + padding
+
+        currentDiff = sqrt(2 * pow(markerSize + padding, 2))
         currentMarker = None
+        print(currentDiff)
         for index in range(len(listMOT)):
             marker = self.markersOnTable[listMOT[index]]
             bucket = self.markersOnTable[bucketIndex]
-            dbX = abs(bucket.currentPos[0] - marker.currentPos[0])
-            dbY = abs(bucket.currentPos[1] - marker.currentPos[1])
-            diffBetween = dbX + dbY
+            dbX = marker.currentPos[0] - bucket.currentPos[0]
+            dbY = marker.currentPos[1] - bucket.currentPos[1]
+            diffBetween = sqrt(pow(dbX, 2) + pow(dbY, 2))
+            print(bucket.fiducialID, marker.fiducialID, diffBetween)
             if diffBetween <= currentDiff:
                 currentDiff = diffBetween
                 currentMarker = marker
@@ -141,7 +140,7 @@ class TableHandler(Widget):
         #   of the markers based on the camera size.
 
         markerSize = 110
-        padding = markerSize / 5
+        padding = markerSize / 10
         x = None
         y = None
 
