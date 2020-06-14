@@ -8,7 +8,8 @@ CITE uses [Matplotlib](https://www.matplotlib.org) to display our information as
 ## Known Issues/TODO
 * If there are markers are on the table before launch, the program will narrate for each marker already on the table all at once.
 * Generating a graph as a daemon process needs to be tested further.
-* A function for connecting to Arduino devices on the table exists and is linked, but is currently not implemented.
+* A function for connecting to Arduino devices on the table exists and is linked, but is currently not implemented. This function would be used to control the lights on each marker.
+* The markers used in testing were print-outs straight from reacTIVision's website. The padding may need to be adjusted to take into the account the size of the 3D-printed models (in table.py).
 
 ## Prerequisities/Installation for Source Code
 You will need the following to set up a proper working environment:
