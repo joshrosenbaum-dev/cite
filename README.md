@@ -16,7 +16,7 @@ You will need the following to set up a proper working environment:
 * [Reactivision](http://reactivision.sourceforge.net) software
 * Python 3.7 with Virtualenv, [Anaconda](https://www.anaconda.com/distribution), or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) (we will be using Anaconda/Miniconda in this documentation)
 * [Kivy](https://www.kivy.org)
-* [oscpy](https://pypi.org/project/oscpy), [pandas](https://pandas.pydata.org), [matplotlib](https://matplotlib.org), [playsound](https://pypi.org/project/playsound), [gTTS (Google Text-to-Speech)](https://pypi.org/project/gTTS), [pyserial](https://pypi.org/project/pyserial/)
+* [oscpy](https://pypi.org/project/oscpy), [pandas](https://pandas.pydata.org), [matplotlib](https://matplotlib.org), [playsound](https://pypi.org/project/playsound), [gTTS (Google Text-to-Speech)](https://pypi.org/project/gTTS), [pyserial](https://pypi.org/project/pyserial/), [kivy-garden](https://pypi.org/project/kivy-garden/)
 
 ### Configuring Source Environment (using Anaconda/Miniconda)
 You may need to update `conda` before starting:
